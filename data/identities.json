@@ -1,0 +1,18 @@
+{
+ "_comment": "Test fixtures for the reference service, which runs on localhost during a check run and is not deployed anywhere. These strings are not credentials and grant access to nothing: they exist so the checks authenticate over the real interface instead of calling an internal function and calling that a test. A real deployment takes identities from the workspace directory, not from a file.",
+ "fixture": true,
+ "identities": [
+  {
+   "token": "fixture-knowledge-reader",
+   "user_id": "u-reader",
+   "display_name": "Knowledge reader (fixture)",
+   "role": "knowledge_reader"
+  },
+  {
+   "token": "fixture-senior-reviewer",
+   "user_id": "u-senior",
+   "display_name": "Senior reviewer (fixture)",
+   "role": "senior_reviewer"
+  }
+ ]
+}

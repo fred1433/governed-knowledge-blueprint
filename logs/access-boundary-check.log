@@ -1,0 +1,88 @@
+ACCESS BOUNDARY CHECKS  --  approved-knowledge publication boundary
+
+run at          2026-09-16T13:54:59.203Z
+evaluated as of 2026-09-16
+code revision   8e09717  (working tree has uncommitted changes)
+node            v26.8.2
+policy          policy/policy.yaml  sha256 39f3899e8e77a648779dbcaf0446fd9e3afd3872f414edc49dd3301d3332c6b8
+test data       5 files in data/  sha256 194c49d1879719e361eea2512449a85d32c5e58225dcafdcad7833cd1442e33d
+command         npm run checks
+
+WHAT THE REGISTRY HOLDS
+   2  analyst_entry          synthetic
+   8  library_article        real content, public pages fetched 2026-09-16
+   4  method_note            synthetic
+   3  private_record         synthetic
+
+THE SWEEP
+  2 identities x 13 queries, every request over HTTP against the reference service
+  oracle: the raw response body, scanned for every private marker, not only the client names
+
+  32 requests, 52 results returned, 0 private marker(s) found
+
+THE PUBLISHED CORPUS, BY IDENTITY
+  knowledge_reader    6 of 17 items
+  senior_reviewer     7 of 17 items
+
+WITHHELD, BY RULE, FOR EACH IDENTITY
+  knowledge_reader
+    R1_PRIVATE_ISOLATION            3  PR-001 PR-002 PR-003
+    R2_REQUIRED_METADATA_UNKNOWN    4  LIB-004 LIB-010 LIB-032 AN-002
+    R3_APPROVAL_REQUIRED            0  
+    R4_APPROVAL_BOUND_TO_VERSION    0  
+    R5_IDENTIFIERS_PRESENT          1  MN-004
+    R6_WITHDRAWN                    1  MN-002
+    R7_RETENTION_WINDOW             1  MN-003
+    R8_AUDIENCE_SCOPE               1  AN-001
+  senior_reviewer
+    R1_PRIVATE_ISOLATION            3  PR-001 PR-002 PR-003
+    R2_REQUIRED_METADATA_UNKNOWN    4  LIB-004 LIB-010 LIB-032 AN-002
+    R3_APPROVAL_REQUIRED            0  
+    R4_APPROVAL_BOUND_TO_VERSION    0  
+    R5_IDENTIFIERS_PRESENT          1  MN-004
+    R6_WITHDRAWN                    1  MN-002
+    R7_RETENTION_WINDOW             1  MN-003
+    R8_AUDIENCE_SCOPE               0  
+
+THE PUBLICATION PATH, STEP BY STEP
+  one private record, carried to shared knowledge the only way it can be. Every line below
+  is a real request, and the code on the right is the one the service answered with.
+
+  as expected  403 (expected 403)  a knowledge reader tries to derive a shareable note from the private record
+  as expected  201 (expected 201)  a senior reviewer derives it, which creates a new item
+  as expected  404 (expected 404)  the new item DER-001 is not readable yet, it is waiting for approval
+  as expected  403 (expected 403)  a knowledge reader tries to approve it
+  as expected  422 (expected 422)  an approval that names no reviewer is refused
+  as expected  403 (expected 403)  the private record itself is offered for approval, and refused outright
+  as expected  200 (expected 200)  a senior reviewer approves the derived item, naming a reviewer and a date
+  as expected  200 (expected 200)  the derived item is now readable by a knowledge reader
+  as expected  404 (expected 404)  the private original is still refused, to the senior reviewer too
+
+  the served derived item contains 0 private marker(s) and names 0 private record id(s)
+  what the reviewer recorded as removed: the client name; the individual name and title; the timing that identifies the account; the wording distinctive enough to identify the conversation
+  the original after all of this: confidentiality=client_private, approval=none
+
+THE CHECKS
+  each one drives the service over HTTP, with a token, through the routes a client uses
+  41 passed, 0 failed
+
+THE NEGATIVE CONTROL
+  each guard is switched off in turn; a guard whose removal nothing notices is decoration
+  CAUGHT  R1_PRIVATE_ISOLATION             2 check(s) went red
+  CAUGHT  R2_REQUIRED_METADATA_UNKNOWN     4 check(s) went red
+  CAUGHT  R3_APPROVAL_REQUIRED             1 check(s) went red
+  CAUGHT  R4_APPROVAL_BOUND_TO_VERSION     2 check(s) went red
+  CAUGHT  R5_IDENTIFIERS_PRESENT           3 check(s) went red
+  CAUGHT  R6_WITHDRAWN                     3 check(s) went red
+  CAUGHT  R7_RETENTION_WINDOW              2 check(s) went red
+  CAUGHT  R8_AUDIENCE_SCOPE                2 check(s) went red
+  every guard is load bearing
+
+WHAT THIS RUN DOES NOT SHOW
+  It exercises the reference controls in this repository. It says nothing about any real
+  workspace. The connection to a live assistant, the real identities, the real sources and
+  the real document store all still have to be accepted in place, with separate accounts.
+  Whether a de-identification is good enough stays a human judgement: the machine floor here
+  is a string check against a list it was given.
+
+RESULT  PASS  0 leak(s) across 32 requests, 0 failed check(s), publication path behaved as expected, negative control passed

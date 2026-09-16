@@ -1,0 +1,208 @@
+{
+ "_comment": "SYNTHETIC. Placeholder internal records so the checks have internal material to govern. The analyst entries are invented: this blueprint does not fill a directory with people it assumes Forward AR Experts works with. The method notes are invented too. Real values for owner, reviewer, review date and audience are decisions for Forward AR Experts, not for a prototype.",
+ "synthetic": true,
+ "generated_at": "2026-09-16",
+ "records": [
+  {
+   "id": "AN-001",
+   "title": "Analyst coverage note, infrastructure automation",
+   "kind": "analyst_entry",
+   "content_type": "analyst_profile",
+   "source_system": "Analyst directory (synthetic)",
+   "source_reference": "synthetic entry",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "synthetic",
+    "status": "synthetic"
+   },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "audience": "leadership",
+   "owner": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "reviewer": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "review_date": {
+    "value": "2026-08-20",
+    "status": "synthetic"
+   },
+   "approval_status": "approved",
+   "approved_by": "senior_reviewer",
+   "contains_client_identifiers": false,
+   "synthetic": true,
+   "text": "Coverage note, infrastructure automation. Which analysts publish on operating models for this category, how each one prefers to receive evidence, and which recent notes an executive should read before a first interaction. Held at leadership audience because it records judgements about named third parties."
+  },
+  {
+   "id": "AN-002",
+   "title": "Analyst coverage note, data platforms",
+   "kind": "analyst_entry",
+   "content_type": "analyst_profile",
+   "source_system": "Analyst directory (synthetic)",
+   "source_reference": "synthetic entry",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "synthetic",
+    "status": "synthetic"
+   },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "audience": "all_staff",
+   "owner": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "approval_status": "approved",
+   "approved_by": "senior_reviewer",
+   "contains_client_identifiers": false,
+   "synthetic": true,
+   "text": "Coverage note, data platforms. Who covers the category, what each analyst asks for first, and the evidence that has moved conversations in the past twelve months."
+  },
+  {
+   "id": "MN-001",
+   "title": "Method note: briefing pre-read and what goes in it",
+   "kind": "method_note",
+   "content_type": "approved_method",
+   "source_system": "Approved shared knowledge (synthetic)",
+   "source_reference": "synthetic entry",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "synthetic",
+    "status": "synthetic"
+   },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "audience": "all_staff",
+   "owner": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "reviewer": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "review_date": {
+    "value": "2026-07-02",
+    "status": "synthetic"
+   },
+   "approval_status": "approved",
+   "approved_by": "senior_reviewer",
+   "contains_client_identifiers": false,
+   "synthetic": true,
+   "text": "The pre-read goes out five working days before a briefing. It carries the narrative in one page, the evidence that supports each claim, the three questions we expect and the answer we intend to give, and the named owner for every follow-up. A briefing without a pre-read is a briefing where the first ten minutes are spent on context the analyst could have read."
+  },
+  {
+   "id": "MN-002",
+   "title": "Method note: evidence pack, superseded",
+   "kind": "method_note",
+   "content_type": "approved_method",
+   "source_system": "Approved shared knowledge (synthetic)",
+   "source_reference": "synthetic entry",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "synthetic",
+    "status": "synthetic"
+   },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "audience": "all_staff",
+   "owner": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "reviewer": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "review_date": {
+    "value": "2026-09-01",
+    "status": "synthetic"
+   },
+   "approval_status": "approved",
+   "approved_by": "senior_reviewer",
+   "withdrawn_at": "2026-09-15",
+   "withdrawn_reason": "superseded by MN-001, kept so withdrawal can be checked rather than assumed",
+   "contains_client_identifiers": false,
+   "synthetic": true,
+   "text": "Superseded guidance on assembling an evidence pack. Retained in the registry so that a withdrawal can be checked, and so that an answer citing it can be traced back."
+  },
+  {
+   "id": "MN-003",
+   "title": "Method note: reference confirmations, stale",
+   "kind": "method_note",
+   "content_type": "approved_method",
+   "source_system": "Approved shared knowledge (synthetic)",
+   "source_reference": "synthetic entry",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "synthetic",
+    "status": "synthetic"
+   },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "audience": "all_staff",
+   "owner": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "reviewer": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "review_date": {
+    "value": "2024-11-04",
+    "status": "synthetic"
+   },
+   "approval_status": "approved",
+   "approved_by": "senior_reviewer",
+   "contains_client_identifiers": false,
+   "synthetic": true,
+   "text": "Guidance on collecting written reference confirmations. Its review date is outside the retention window on purpose, so that an item nobody has looked at in two years can be seen leaving shared knowledge without anyone having to remember it."
+  },
+  {
+   "id": "MN-004",
+   "title": "Method note: draft that still carries identifiers",
+   "kind": "method_note",
+   "content_type": "approved_method",
+   "source_system": "Approved shared knowledge (synthetic)",
+   "source_reference": "synthetic entry",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "synthetic",
+    "status": "synthetic"
+   },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "audience": "all_staff",
+   "owner": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "reviewer": {
+    "value": "Founder and President",
+    "status": "synthetic"
+   },
+   "review_date": {
+    "value": "2026-09-10",
+    "status": "synthetic"
+   },
+   "approval_status": "approved",
+   "approved_by": "senior_reviewer",
+   "contains_client_identifiers": true,
+   "synthetic": true,
+   "_why_this_exists": "A record filed as internal that still names an account, approved by mistake, with every other field in order. It is the case where a single wrong label is the only thing between private material and shared knowledge. One rule holds it, and the negative control switches that rule off to show the checks notice.",
+   "text": "Draft note on restructuring a retainer around briefing cycles. It still names Halden Robotics and quotes the internal board deck about the failed launch, so it is flagged as carrying identifiers and is not publishable in this state. It has to be rewritten as a separate de-identified item."
+  }
+ ]
+}

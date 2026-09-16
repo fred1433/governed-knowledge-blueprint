@@ -1,108 +1,78 @@
 # 3. Taxonomy and mandatory metadata
 
-The taxonomy is not invented here. The Library already publishes four pillars, and the registry
-uses them rather than replacing them. What is added is the metadata every item must carry before
-it can be shared, and an honest account of which of those values exist today and which a person
-has to confirm.
+## The taxonomy is already yours
 
-## 3.1 Taxonomy
+The Library publishes four pillars. The sample uses them exactly as they appear, two articles
+under each, and adds nothing:
 
-**Level 1, pillar** (as published on `/library`):
+- Forward Leadership & Executive Influence
+- Forward Strategy & Market Positioning
+- Influence Mechanics (Briefings & Evaluations)
+- Program Excellence (Ops & Delivery)
 
-- Forward Leadership and Executive Influence
-- Forward Strategy and Market Positioning
-- Program Excellence (Ops and Delivery)
-- Influence Mechanics (Briefings and Evaluations)
+An editorial structure that already exists and that people already use is worth more than a
+cleaner one invented by an outsider. The work is not to design a taxonomy. It is to carry the
+editorial judgement the Library already applies across a boundary where no editor is watching.
 
-**Level 2, content type**: `library_article`, `site_page`, `blog_post`, `approved_method`,
-`template`, `analyst_profile`, `raw_sales_signal`, `placeholder`, `test_fixture`.
+## The seven mandatory fields
 
-**Level 3, audience**: AR leader, CMO or communications, product, executive. Optional, and useful
-mainly for the Library's own navigation.
+Source, attribution, permission, confidentiality, owner, reviewer, review date.
 
-Two rules keep the taxonomy from rotting:
+The first four are properties of the item and can usually be derived. The last three are decisions,
+and nobody outside Forward can make them.
 
-1. An item has exactly one pillar. If it needs two, the second becomes a cross-reference, because
-   an item with two homes has no owner.
-2. A new pillar is a decision by the Founder and President, not a side effect of a contributor
-   picking a value from a list.
+## Unknown is a stop, not a warning
 
-## 3.2 The seven mandatory fields
+This is the one place where the obvious design is wrong.
 
-| Field | What it must hold | Where it comes from |
+The obvious design records a missing owner as "to be confirmed", publishes the item, and shows a
+badge somewhere. The badge is never read, the queue of things to confirm grows, and within a
+quarter the system's answer to "who is accountable for this" is a list nobody has looked at.
+
+So: **an item with an unknown owner, reviewer, review date or attribution is not published.** It
+is not degraded, not flagged, not published with a warning. The rule is `R2_REQUIRED_METADATA_UNKNOWN`
+and it is enforced on the server, for every identity, on both retrieval paths.
+
+The consequence is deliberate and worth saying out loud: **being published on your public website
+does not make something approved shared knowledge.** Those are two different acts. The first is
+editorial. The second says someone is accountable for the item being current when an assistant
+quotes it to a colleague.
+
+### What that rule does to the eight sampled articles
+
+Five carry a synthetic governance decision, so they publish. Three do not, and the reason is not
+arbitrary: on those three the title in the listing and the heading on the page disagree, one of
+them by a spelling difference. When a system cannot say what an item is called, it has no business
+saying who owns it. Those three stay held, and the receipt names them.
+
+The five that publish carry placeholder values in `data/governance-decisions.json`, marked
+synthetic in the file and served as synthetic to the reader. They are the shape of a decision, not
+a decision. A check fails if any governance value on a real article is presented as anything other
+than unknown or synthetic.
+
+## What the fetched pages showed about metadata
+
+Computed from the eight pages, and recomputed every time the checks run:
+
+| What was found | On how many | Why it matters here |
 |---|---|---|
-| Source | The system and the reference inside it | Automatic |
-| Attribution | Named author or the firm, and how that was established | From the item, or set by the reviewer |
-| Permission | `public`, `internal`, `private_client` | Set at registration, reviewed at approval |
-| Confidentiality | `public`, `internal`, `client_private` | Set at registration, never widened without a named approver |
-| Owner | The person accountable for the item being right | Human |
-| Reviewer | The senior practitioner who approved it | Human |
-| Review date | When it was last judged current | Human |
+| Title tag with an empty segment between two separators | 8 of 8 | Whatever indexes the title stores a fragment. |
+| The first prose block after the summary is a practitioner biography | 8 of 8 | An ingestion step that keeps the opening chunk indexes a biography under the article's title. |
+| Listing title and page heading disagree | 3 of 8 | Two tools will disagree about the identity of one item. |
+| Meta description byte-identical to another article | 2 of 8 | Two pages hand an index the same summary, and a ranker cannot tell them apart. |
 
-Three of those are machine facts and four are human judgements. Pretending otherwise is how
-metadata schemes die: the fields get filled with defaults, and then nobody trusts them.
+The first two are the ones that would quietly ruin retrieval quality, and neither is visible to a
+reader of the site. They are visible to a registry, which is the argument for having one.
 
-## 3.3 What the 71 Library rows carry today
+## Attribution, and why it is mandatory rather than nice
 
-| Field | Observed | To confirm by a person |
-|---|---|---|
-| Source | 71 | 0 |
-| Permission | 71 (public, they are on the open web) | 0 |
-| Confidentiality | 71 (public) | 0 |
-| Attribution | 71 provisional, set to the firm | 71, each needs the named author or an explicit firm attribution |
-| Owner | 0 | 71 |
-| Reviewer | 0 | 71 |
-| Review date | 0 (the sitemap gives a last modified date, which is not a review) | 71 |
+An answer that carries a source a reader can open is checkable. An answer that does not is a
+rumour with good formatting. Attribution is in the required set for that reason, and an item
+without it is withheld by the same rule that withholds an item without an owner.
 
-So: **213 values a person has to set**, three per item, and not one of them can be derived from the
-public site. That number is the honest cost of governance, and it is smaller than it looks: owner
-and reviewer are the same two names for most of the Library, and the fastest path is to set them
-per pillar and override the exceptions.
+## What remains open
 
-`source_last_modified` is captured from the sitemap and ranges from 23 July 2026 to 15 September
-2026 across the site. It is evidence of editing, not evidence of review, and the registry keeps the
-two apart on purpose.
-
-## 3.4 What the registry flagged on its own
-
-| Flag | Rows | What it means for retrieval |
-|---|---|---|
-| `no_meta_description` | 11 | No usable summary for a result card or a citation preview |
-| `thin_or_empty_page` | 6 | Under 60 words. An assistant will still cite them |
-| `title_shared_with_another_page` | 4 | Two live pages, one title. Citations become ambiguous |
-| `not_intended_as_knowledge` | 3 | A placeholder, a test page, a test blog entry, all live |
-| `default_site_name_in_title` | 2 | The Wix default site name is still in the browser title |
-| `duplicate_of_another_page` | 1 | A page titled "Copy of ..." |
-
-Each flag holds the row for a decision. None of them deletes anything or changes the site.
-
-## 3.5 Contributed articles
-
-The Library invites outside contributions and promises review for quality, relevance, originality,
-evidence, permissions and confidentiality, with clear attribution and an author profile. The
-registry mirrors that promise as fields, so the promise is enforceable:
-
-- `attribution` is mandatory and `R7_ATTRIBUTION_REQUIRED` refuses to share an item without it;
-- `permission` records the right to publish, obtained from the contributor;
-- `reviewer` and `review_date` record who accepted it and when;
-- a contributed item that mentions a third party's confidential material is `client_private` on
-  arrival and goes through the same de-identification path as anything else.
-
-## 3.6 What the registry strips before indexing
-
-A knowledge index is not a copy of a website. Four things are removed from the passages before
-anything is indexed, and the citation still points at the page where they live:
-
-- **Contact details.** Addresses and phone numbers found in the published pages are replaced by
-  `[contact detail on the source page]`. One page carried a named person's address and direct line,
-  and an index is the wrong place for it to be harvested from.
-- **Published prices.** Figures are replaced by `[figure on the source page]`. A retrieval layer
-  that quotes a number out of its commercial context is a liability, and the number changes.
-- **Staffing copy.** Passages about bringing people into a team are not methods, so they are not
-  indexed as methods. Four passages were dropped on that rule.
-- **Typography.** Long dashes are normalised to hyphens and spacing before punctuation is repaired,
-  so a quoted passage reads cleanly wherever it is displayed.
-
-532 passages remain, out of the 71 pages. The stripping is done by the registry, in one place, and
-the reason each item has fewer passages than its word count suggests is recorded rather than
-mysterious.
+Every real value. Who owns which pillar, who reviews, how often a review date has to be refreshed
+to stay inside the retention window, and whether eighteen months is the right window at all.
+Eighteen is a placeholder chosen so the rule could be exercised, and one sample item is deliberately
+outside it so the expiry can be watched happening.

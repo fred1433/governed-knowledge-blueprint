@@ -1,43 +1,60 @@
-// Pure policy logic: no file system, no parser, no environment. The page in the browser and
-// the tests in CI import this same module, so "the site runs the policy" is a fact rather
-// than a claim.
+// Pure policy logic: no file system, no parser, no clock, no environment.
+//
+// The reference service imports this on the server side, before anything is indexed or
+// returned. Nothing in a browser is asked to enforce any of it.
 
-/** Predicates. Each returns true when the rule fires (item is withheld). */
-export const PREDICATES = {
-  confidentiality_in: (item, ctx, params) =>
-    (params?.values ?? []).includes(item.confidentiality),
-
-  approval_status_not_in: (item, ctx, params) =>
-    !(params?.values ?? []).includes(item.approval_status),
-
-  flag_is_true: (item, ctx, params) => item[params.field] === true,
-
-  permission_not_granted_to_role: (item, ctx) =>
-    !(ctx.role?.grants ?? []).includes(item.permission),
-
-  internal_without_review_date: (item) =>
-    item.permission === 'internal' && !value(item.review_date),
-
-  review_date_older_than: (item, ctx, params) => {
-    const scope = params?.applies_to_permissions;
-    if (scope && !scope.includes(item.permission)) return false;
-    const d = value(item.review_date);
-    if (!d) return false; // absence is handled by R5, not here
-    const limit = new Date(ctx.today);
-    limit.setMonth(limit.getMonth() - (params?.months ?? 18));
-    return new Date(d) < limit;
-  },
-
-  attribution_missing: (item) => !value(item.attribution),
-};
-
-function value(field) {
+/** Read a field that may be a bare value or a {value, status} pair. */
+export function value(field) {
   if (field == null) return null;
   if (typeof field === 'object') return field.value ?? null;
   return field;
 }
 
-/** An exception only counts if it names the rule and the item and has not expired. */
+/** A governance field counts as known only if it has a value and is not marked unknown. */
+export function isKnown(field) {
+  if (field == null) return false;
+  if (typeof field === 'object') {
+    if (field.status === 'unknown') return false;
+    return field.value != null && field.value !== '';
+  }
+  return field !== '';
+}
+
+/** Each predicate returns true when the rule fires, meaning the item is withheld. */
+export const PREDICATES = {
+  confidentiality_in: (item, ctx, params) => (params?.values ?? []).includes(item.confidentiality),
+
+  required_metadata_unknown: (item, ctx, params) =>
+    (params?.fields ?? []).some((f) => !isKnown(item[f])),
+
+  approval_status_not_in: (item, ctx, params) =>
+    !(params?.values ?? []).includes(item.approval_status),
+
+  // An approval is given to a version. If the content has moved, the approval does not follow it.
+  version_drift: (item) =>
+    item.approval_status === 'approved' &&
+    Boolean(item.approved_content_hash) &&
+    item.content_hash !== item.approved_content_hash,
+
+  flag_is_true: (item, ctx, params) => item[params.field] === true,
+
+  withdrawn_on_or_before: (item, ctx) =>
+    Boolean(item.withdrawn_at) && new Date(item.withdrawn_at) <= new Date(ctx.today),
+
+  review_date_older_than: (item, ctx, params) => {
+    const scope = params?.applies_to_permissions;
+    if (scope && !scope.includes(item.permission)) return false;
+    const d = value(item.review_date);
+    if (!d) return false; // absence is R2's business, not this rule's
+    const limit = new Date(ctx.today);
+    limit.setMonth(limit.getMonth() - (params?.months ?? 18));
+    return new Date(d) < limit;
+  },
+
+  audience_not_granted: (item, ctx) => !(ctx.role?.audiences ?? []).includes(item.audience),
+};
+
+/** An exception counts only if it names the rule and the item, has an approver, and has not expired. */
 export function exceptionFor(policy, item, rule, today) {
   return (policy.exceptions ?? []).find(
     (e) =>
@@ -50,35 +67,37 @@ export function exceptionFor(policy, item, rule, today) {
 }
 
 /**
- * Decide whether one item may be retrieved by one role.
- * Returns { allowed, rule, reason, exception } — the first rule that withholds wins,
- * so the reason a reader sees is the strongest reason, not a list.
+ * May this item be published to this role, today?
+ * The first rule that fires wins, so a reader is told the strongest reason rather than a list.
  */
-export function decide(policy, item, roleName, today = '2026-09-16') {
+export function decide(policy, item, roleName, today) {
   const role = policy.roles[roleName];
   if (!role) throw new Error(`unknown role: ${roleName}`);
   const ctx = { role: { name: roleName, ...role }, today };
   for (const rule of policy.rules) {
-    const fired = PREDICATES[rule.predicate](item, ctx, rule.params);
-    if (!fired) continue;
-    const exception = exceptionFor(policy, item, rule, today);
-    if (exception) continue;
-    return { allowed: false, rule: rule.id, reason: rule.reason, exception: null };
+    const predicate = PREDICATES[rule.predicate];
+    if (!predicate) throw new Error(`rule ${rule.id} has no implemented predicate`);
+    if (!predicate(item, ctx, rule.params)) continue;
+    if (exceptionFor(policy, item, rule, today)) continue;
+    return { allowed: false, rule: rule.id, reason: rule.reason.trim() };
   }
-  return { allowed: true, rule: null, reason: null, exception: null };
+  return { allowed: true, rule: null, reason: null };
 }
 
-/** Everything a role may retrieve, with the decision attached to each item. */
-export function shareable(policy, items, roleName, today = '2026-09-16') {
-  return items
-    .map((item) => ({ item, decision: decide(policy, item, roleName, today) }))
-    .filter((x) => x.decision.allowed)
-    .map((x) => x.item);
+/** The published corpus for one role: what this identity may see, and nothing else. */
+export function publishedFor(policy, items, roleName, today) {
+  return items.filter((item) => decide(policy, item, roleName, today).allowed);
 }
 
-/** Why each item was withheld, for the log and for the review queue. */
-export function withheld(policy, items, roleName, today = '2026-09-16') {
+/** Everything withheld, with the rule that stopped it. Used by the log and the review queue. */
+export function withheldFor(policy, items, roleName, today) {
   return items
     .map((item) => ({ item, decision: decide(policy, item, roleName, today) }))
-    .filter((x) => !x.decision.allowed);
+    .filter((x) => !x.decision.allowed)
+    .map((x) => ({ id: x.item.id, title: x.item.title, rule: x.decision.rule }));
+}
+
+/** May this identity approve anything at all? Asked on the server, never in a browser. */
+export function mayApprove(policy, roleName) {
+  return Boolean(policy.roles[roleName]?.may_approve);
 }

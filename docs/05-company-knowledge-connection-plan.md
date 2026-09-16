@@ -1,40 +1,16 @@
 # 5. Connecting ChatGPT Business Company Knowledge
 
-Everything asserted here about Company Knowledge comes from OpenAI's own documentation, read on
-16 September 2026, quoted with its URL. Where the documentation is silent, this document says so
-instead of filling the gap. The help articles carry an "Updated" stamp and they do change, so the
-first task of any implementation week is to re-read the four pages listed at the end and diff them
-against what is written here.
+Everything asserted here about the product is quoted from OpenAI's own help pages, read on
+16 September 2026, with the URL beside it. Where the documentation is silent, this document says
+so rather than filling the gap. The pages carry an "Updated" stamp and they do change: the first
+task of an implementation week is to re-read all four and diff them against what is written below.
 
-Sources:
+- **[A]** Company knowledge in ChatGPT, https://help.openai.com/en/articles/12628342-company-knowledge-in-chatgpt-business-enterprise-and-edu
+- **[B]** Administrator-managed apps with sync in ChatGPT, https://help.openai.com/en/articles/10847137-administrator-managed-apps-with-sync-in-chatgpt
+- **[C]** ChatGPT Business release notes, https://help.openai.com/en/articles/11391654-chatgpt-business-release-notes
+- **[D]** Apps in ChatGPT, https://help.openai.com/en/articles/11487775-apps-in-chatgpt
 
-- **[A]** Company knowledge in ChatGPT (Business, Enterprise, and Edu) - https://help.openai.com/en/articles/12628342-company-knowledge-in-chatgpt-business-enterprise-and-edu
-- **[B]** Administrator-managed apps with sync in ChatGPT - https://help.openai.com/en/articles/10847137-administrator-managed-apps-with-sync-in-chatgpt
-- **[C]** ChatGPT Business release notes - https://help.openai.com/en/articles/11391654-chatgpt-business-release-notes
-- **[D]** Apps in ChatGPT - https://help.openai.com/en/articles/11487775-apps-in-chatgpt
-
-## 5.1 What the product actually is, in its own words
-
-> "Company Knowledge is a plugin that helps ChatGPT answer organization-specific questions using
-> the knowledge sources available to you. It replaces the previous company knowledge option in
-> chat." **[A]**
-
-> "Plans: Available on ChatGPT Business, Enterprise, and Edu." **[A]**
-
-Two sources of content reach it, and they behave differently:
-
-| | Administrator-managed sync | App (access) connector |
-|---|---|---|
-| What it does | "connect a supported source and make approved content available for indexed search" **[B]** | "access connectors, which fetch content when a user asks a question, built using MCP" **[C], 24 Nov 2025** |
-| Who sets it up | A workspace owner or administrator **[B]** | The member, by authorising their own account **[A]** |
-| Documented sources | "Supported administrator-managed sources may include Google Drive, SharePoint, and Microsoft Teams when those options are available for your workspace and region" **[B]** | A partner list that includes Monday.com **[C], 24 Nov 2025** |
-| Freshness | Indexed in advance, with a delay (see 5.4) | Fetched at question time |
-
-One sentence in **[B]** decides a lot of the design: *"A source listed as an app or plugin is not
-necessarily available for administrator-managed sync."* An app being connectable does not mean its
-content can be indexed under an administrator's scope.
-
-## 5.2 The permission model, and what it does not give you
+## 5.1 The distinction the whole plan rests on
 
 > "Company Knowledge respects permissions in the connected source. A member can retrieve only
 > information they are already allowed to access through an individually authorized account or a
@@ -43,139 +19,189 @@ content can be indexed under an administrator's scope.
 > "Does Company Knowledge respect our existing permissions? Yes. ChatGPT can only access what each
 > user is already allowed to view." **[A]**
 
-> "Administrator-managed sync does not grant members access to content they cannot view in the
-> underlying provider." **[B]**
+That answers one question: *can this person open this document?* It does not answer the question
+this engagement is about: *does Forward permit this document to be used by an assistant at all?*
 
-> "The plugin does not override workspace access controls or app permissions." **[A]**
+Those come apart constantly. A partner can legitimately open a client folder and still not want
+that folder answering colleagues' questions. The publication rule in documents 1 to 4 is an
+additional restriction that has to be built. It is not a property inherited from the platform, and
+nothing in the help pages offers it.
 
-Read carefully, that is a mirror, not a gate. **ChatGPT enforces the source's permissions. It does
-not add a permission model of its own.** The consequences for Forward AR Experts are direct:
+So the architecture does not filter at question time. It publishes approved items to a store and
+connects only that store. What is not published was never in reach.
 
-1. **The folder permissions are the access control.** Whatever governance you want between an AR
-   lead and a contributor has to exist in the source, because that is the only thing the assistant
-   will reproduce.
-2. **Group-level RBAC is documented for the larger plans.** *"Enterprise and Edu administrators and
-   owners can manage access to individual apps using RBAC and group-level permissions."* **[A]**
-   The same sentence does not name Business. Plan the Business rollout as if that control is not
-   available to you, and put the control in the source instead.
-3. **Reading happens without being asked for.** *"When Company Knowledge isn't selected, ChatGPT
-   may still use apps automatically as part of the default experience."* **[A]**, and in **[D]**:
-   *"By default, ChatGPT uses Important actions, which allows reading from apps automatically."*
-   So "we will tell the team not to ask it about clients" is not a control. Only not connecting the
-   source is.
-4. **On Business, connectors start on.** *"Connectors remain default off for Enterprise plans, and
-   default on for Business plans."* **[C], 24 Nov 2025**, and *"Apps are enabled by default in
-   ChatGPT Business."* **[A]** A member can therefore authorise their own account to an app unless
-   an administrator changes the workspace setting. That is the first thing to check in the console.
+## 5.2 Business is not Enterprise
 
-**The rule that follows, and it is the whole architecture in one line: any account that can open a
-private client board must not be the account that authorises a connector.**
+> "Plans: Available on ChatGPT Business, Enterprise, and Edu." **[A]**
 
-## 5.3 The recommended connection
+> "Enterprise and Edu administrators and owners can manage access to individual apps using RBAC
+> and group-level permissions." **[A]**
+
+The second sentence names Enterprise and Edu. It does not name Business. Plan the Business rollout
+as though group-level role-based control over apps is not available, and put the control in the
+source instead. Likewise for compliance tooling: **[A]** scopes conversation-event review to
+"eligible Enterprise and Edu workspaces".
+
+Two more Business defaults that matter more than they look:
+
+> "Apps are enabled by default in ChatGPT Business." **[A]**
+
+> "Connectors remain default off for Enterprise plans, and default on for Business plans." **[C]**, 24 November 2025
+
+> "When Company Knowledge isn't selected, ChatGPT may still use apps automatically as part of the
+> default experience." **[A]**
+
+> "By default, ChatGPT uses Important actions, which allows reading from apps automatically but
+> asks before actions that may have a meaningful effect outside ChatGPT, expose sensitive
+> information, or be difficult to undo." **[D]**
+
+Read together: telling the team not to ask about clients is not a control, and neither is leaving
+Company Knowledge unselected. The only control is what is connected. The first thing to check in
+the admin console is which apps are already enabled and who has authorised an account.
+
+**The rule that follows, and it is the architecture in one line: the account that can open a
+private client space must not be the account that authorises a connector.**
+
+## 5.3 Two connection types, and why restricting one does not restrict the other
+
+| | Administrator-managed sync | App connector |
+|---|---|---|
+| What it does | "connect a supported source and make approved content available for indexed search" **[B]** | "access connectors, which fetch content when a user asks a question, built using MCP" **[C]** |
+| Who sets it up | "A workspace owner or authorized administrator" **[B]** | The member authorises their own provider account **[A]** |
+| Named sources | "Supported administrator-managed sources may include Google Drive, SharePoint, and Microsoft Teams when those options are available for your workspace and region" **[B]** | A partner list that includes Monday.com **[C]**, 24 November 2025 |
+| Scope control | "The administrator-selected source scope can further limit what ChatGPT indexes." **[B]** | The authorising account's own permissions |
+
+Two sentences decide the design:
+
+> "A source listed as an app or plugin is not necessarily available for administrator-managed
+> sync." **[B]**
+
+> "A separate provider account connection may be required for live app actions, even when
+> administrator-managed indexed search is already available." **[B]**
+
+The second is the one to hold on to. **Narrowing the indexed scope does not close a direct
+connection.** They are separate paths and they have to be checked separately. **[B]** makes the same
+point about removal: "Do not assume that disconnecting an individual live app account also removes
+a workspace-managed indexed source."
+
+Any review of this workspace therefore enumerates both: what is indexed under an administrator
+scope, and which members have authorised which accounts directly.
+
+## 5.4 The recommended connection
 
 ```
-   Approved Shared Knowledge (registry)
-              │  publish: one file per approved item, front matter carries
-              │  registry id, owner, reviewer, review date, pillar, source
-              ▼
-   ONE folder in Google Drive: "Forward Shared Knowledge"
-              │  admin-managed sync, administrator-selected scope = this folder only
-              ▼
-   ChatGPT Business, Company Knowledge
-              │  members retrieve only what Drive already lets them open  [A][B]
-              ▼
-   Answers cite the published document, which names the item and its reviewer
+  approved items in the registry
+        |  publish, one document per approved item, front matter carrying
+        |  the registry id, owner, reviewer, review date, pillar and source
+        v
+  ONE location in the document store Forward already uses
+        |  administrator-managed connection, administrator-selected scope = that location only
+        v
+  ChatGPT Business, Company Knowledge
+        |  members retrieve only what the store already lets them open  [A][B]
+        v
+  answers that cite a document naming its registry id and its reviewer
 ```
 
-Why a folder rather than a direct connection to Monday or to the Library:
+**Which store is Forward's decision, and this document does not make it.** The brief does not say
+what is in use, and choosing on a client's behalf is how an architecture acquires a dependency
+nobody agreed to. What the location has to support: an administrator-managed connection with a
+scope that can be narrowed to it, and permissions that already match the audience the item is held
+for. **[B]** lists Google Drive, SharePoint and Microsoft Teams as sources that "may" offer
+administrator-managed setup "when those options are available for your workspace and region", and
+tells you to "Confirm eligibility in the provider's current setup article" rather than assume.
 
-- It is a documented administrator-managed source: *"Supported administrator-managed sources may
-  include Google Drive, SharePoint, and Microsoft Teams"* **[B]**, and the administrator chooses
-  the scope: *"The administrator-selected source scope can further limit what ChatGPT indexes."*
-  **[B]**
-- It makes publication an explicit act. A file exists in that folder because the registry put it
-  there after approval, which is exactly the control the engagement asks for.
-- It keeps the private sources structurally out of reach, rather than filtered out at question
-  time.
+Two things it is worth knowing before that conversation. **[A]** notes that "A supported
+administrator-managed Google Drive source can be available without an individual connection", and
+**[B]** records regional limits that differ by provider, with SharePoint and Teams supported in
+fewer data-residency regions than Drive. Also **[B]**: "Individually authorized app sync is no
+longer available", so personal sync is not a fallback.
 
-**Monday.com.** It appears in OpenAI's partner list of MCP access connectors **[C], 24 Nov 2025**.
-It is an access connector, so it fetches at question time with the authorising member's own
-permissions, and **[B]** warns that being listed as an app does not make a source available for
-administrator-managed sync. Recommendation: if Monday is connected at all, connect it with an
-account whose board access is limited to the operational board, and keep every private client board
-outside that account's reach. Verify in your own workspace before relying on any of it, because
-**[A]** also says *"The plugin discovers the knowledge sources available to you when it runs. App
-availability can depend on your plan, workspace settings, role, and the app's own requirements."*
+**A dedicated connector limited to approved items is a reasonable alternative**, not a layer this
+architecture imposes. Custom apps built with MCP are supported: **[A]** says the plugin "can
+discover supported custom apps built with MCP when those apps are available to you in ChatGPT",
+subject to workspace access, app permissions and provider authorisation. It buys exact control
+over what is exposed, and costs a component to run and keep available. It is worth it if the
+document-store route cannot be scoped narrowly enough, and not otherwise.
 
-## 5.4 The one thing that cannot be made instant
+**Monday.com.** It is in the partner list of MCP access connectors **[C]**, which fetch at question
+time with the authorising member's permissions. The recommendation is not "connect Monday and then
+filter". It is: make accessible only the spaces or objects explicitly authorised for assistant
+use, and check every parallel path into the same data. If Monday is connected at all, connect it
+with an account whose board access is limited to the operational board, and keep every private
+client space outside that account's reach.
 
-> "The initial index may take time to become available. New content and permission changes can also
-> take time to appear after the source refreshes." **[B]**
+## 5.5 Propagation is not instant
 
-Withdrawal is therefore not immediate. Design for it:
+> "The initial index may take time to become available. New content and permission changes can
+> also take time to appear after the source refreshes." **[B]**
+
+Withdrawal in the registry is immediate, as document 7 shows. Withdrawal downstream is not, and no
+figure for it should be invented. Design for the gap:
 
 - the registry, not the assistant, is the system of record for what is approved;
-- withdrawal means unapprove in the registry **and** remove the file from the synced folder, in
-  that order, on the same day;
-- for an urgent withdrawal, narrowing the administrator-selected scope is the faster lever;
-- every published file names its registry id, so an answer citing a withdrawn document can be
-  traced back and corrected;
-- no published document should contain anything whose exposure for a few hours would be a problem.
-  That is another reason client material never enters the folder at all.
+- withdrawing means unapproving in the registry **and** removing the published document, the same
+  day, in that order;
+- for an urgent removal, narrowing the administrator-selected scope is the faster lever;
+- every published document names its registry id, so an answer citing a withdrawn document can be
+  traced and corrected;
+- nothing is published whose exposure for a few hours would be a problem, which is another reason
+  client material never enters the store at all.
 
-## 5.5 Citations
+The propagation delay is a number to measure in Forward's workspace during acceptance, and then to
+agree on. It is not a number to quote from here.
 
-The release note of 23 October 2025 says company knowledge gives answers *"with clear citations and
-links back to the original sources"* **[C]**. The current help article is more careful: *"When an
-answer includes citations or source links, use them to verify the information."* **[A]** and *"If an
-answer includes source links, open them to check the details."* **[A]**
+## 5.6 Citations
 
-So: do not promise the team that every answer will be cited. Two mitigations, both cheap:
+> "When an answer includes citations or source links, use them to verify the information." **[A]**
 
-1. Every published file starts with a front matter block naming the registry id, the pillar, the
-   owner, the reviewer and the review date, so a citation is traceable and an uncited answer can
-   still be checked by searching the id.
-2. The acceptance test in 5.6 records, for each test question, whether a citation appeared and
-   which document it pointed at. That number is a fact about your workspace, not a claim from a
-   help page.
+> "If an answer includes source links, open them to check the details." **[A]**
 
-## 5.6 Acceptance test for the connection
+Citations are a way back to the source. They are not a guarantee that every answer carries one, and
+they are not a guarantee that what was cited is everything relevant. Do not promise the team
+otherwise. Two cheap mitigations: every published document opens with front matter naming its
+registry id, pillar, owner, reviewer and review date, so an uncited answer can still be checked by
+searching the id; and the acceptance test records, per question, whether a citation appeared and
+what it pointed at. That number is a fact about Forward's workspace rather than a claim from a help
+page.
 
-Run these after the folder is synced, once per role, and record the result. The pass criteria are
-about what comes back, not about how good the prose is.
+Make it a pass criterion rather than a hope: the cited source opens with the account under test,
+the passage genuinely supports the answer, and no forbidden metadata appears in what is shown.
+
+## 5.7 Acceptance test, to run in Forward's workspace
+
+Run each from a separate real account, not only the administrator's, since the documented model is
+per user. **[B]** says the same thing in its own setup steps: "Wait for initial indexing to finish,
+then verify that eligible workspace members can retrieve only content they are allowed to access."
 
 | # | Ask | Pass |
 |---|---|---|
-| 1 | "What is our briefing pre-read and when does it go out?" | Answers from an approved method document, cites it |
-| 2 | "What do we require in an evidence pack before an evaluation submission?" | Answers from the approved method, cites it |
-| 3 | "What does the Library say about positioning for analyst mindshare?" | Answers from the public Library page |
-| 4 | "What did we learn from the last discovery call with a client?" | No client name, no individual name. Either the de-identified pattern note, or nothing |
-| 5 | "Summarise the renewal risks in our pipeline." | Nothing from the private boards. If anything comes back, stop and check what is connected |
-| 6 | Name a specific client of yours and ask what they said | Nothing. This is the test that matters, and it is run by a person, from their own account |
-| 7 | The same question as 3, from a contributor account | Public material only |
-| 8 | Ask for a document that was withdrawn this morning | Expect the index lag from 5.4. Record how long it takes to disappear |
+| 1 | A question answered by an approved method document | Answers from it, cites it, the link opens for this account |
+| 2 | A question answered by a public Library article | Answers from the published item, cites it |
+| 3 | "What did we learn from the last discovery call with a client?" | No client name, no individual name. Either a de-identified note, or nothing |
+| 4 | "Summarise the renewal risks in our pipeline." | Nothing from the private spaces. Anything at all means stopping and checking what is connected |
+| 5 | Name one of your own clients and ask what they said | Nothing. This is the test that matters, run from each member's own account |
+| 6 | Question 2 again, from an account without the internal audience | Public material only |
+| 7 | A document withdrawn this morning | Expect the delay from 5.5. Record how long it takes to disappear, and agree on that number |
+| 8 | Ask something answerable only from a connected operational board | Establishes whether a parallel path exists that the indexed scope does not cover |
 
-Test 6 is run from each member's account, not only the administrator's, because the documented
-model is per user: *"ChatGPT can only access what each user is already allowed to view."* **[A]**
+## 5.8 Claims this plan refuses to make
 
-## 5.7 User guide, one page for the team
+- That Company Knowledge applies Forward's publication policy. It applies the source's permissions.
+  The policy is applied by the publication step, before anything is connected.
+- That permissions on an operational board prevent an assistant reaching raw material. Permissions
+  and assistant-authorised scope are separate questions, verified separately.
+- That a synced folder is the only possible source. It is one documented route; a dedicated
+  connector limited to approved items is another.
+- That leaving Company Knowledge unselected prevents apps being used. **[A]** says the opposite.
+- That revoking access takes effect everywhere at once. **[B]** says it does not.
+- That the local checks prove Company Knowledge will not disclose anything. They validate the
+  reference controls in this repository. The real integration has to be accepted in Forward's
+  workspace, with distinct identities, using the test above.
 
-- Company Knowledge answers from approved shared knowledge. If something is not in the folder, it
-  is not approved yet, and the answer will be silence rather than a guess.
-- Never paste client material into a chat to get a better answer. The registry path exists for that:
-  put the signal in the review queue and let it come back as a method note.
-- Check the citation. An answer without a source link is a draft, not a source.
-- If an answer contains a client name, stop and tell the Founder and President the same day. That is
-  an incident, and the boundary test in document 7 is what it gets compared against.
-- The assistant is not the system of record. The registry is.
+## What remains open
 
-## 5.8 Claims this document refuses to make
-
-- That Company Knowledge enforces role based access on a Business workspace. The documented RBAC
-  sentence names Enterprise and Edu **[A]**.
-- That every answer carries a citation. The help article says "when an answer includes citations"
-  **[A]**.
-- That Monday.com content can be indexed under an administrator-managed scope. It is listed as an
-  MCP access connector **[C]**, and **[B]** warns those are different things.
-- That a permission change propagates immediately. **[B]** says the opposite.
-- That anything in this plan removes the need for the source's own permissions to be correct.
+Which document store. The propagation delay, measured. Which apps are already enabled in the
+workspace and who has authorised an account. Whether a dedicated connector is worth its
+maintenance. And deliverable 7 in the original brief, the review of the build once it exists, which
+has not been done here and cannot be: there is nothing built yet to review.

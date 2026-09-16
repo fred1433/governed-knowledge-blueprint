@@ -1,135 +1,146 @@
--- Governed knowledge system, reference schema.
--- Portable SQL (tested shape: SQLite and Postgres). The JSON files in ../data are the same
--- model, populated: the public Library rows are real, everything else is illustrative.
+-- Reference schema for a governed knowledge registry.
 --
--- Two ideas are enforced here rather than left to convention:
---   1. permission and confidentiality are separate columns, so a mislabel on one is still
---      caught by the other;
---   2. nothing can be marked approved without a reviewer and a review date.
+-- This is an implementation of record for the controls, not a proposal to add another database
+-- to the stack. Forward AR Experts already has systems of record. What this file shows is which
+-- constraints have to exist somewhere, expressed in the one language where they are unambiguous.
+-- A team that keeps the registry in an existing tool has to reproduce these constraints there,
+-- and the acceptance criteria in docs/06 are written so they can be checked either way.
+--
+-- The point of writing it as DDL: three of the controls are structural. A shape that makes an
+-- unapproved item unpublishable, or an approval unattributable, costs nothing to enforce and
+-- cannot be forgotten under deadline.
 
-CREATE TABLE content_registry (
-  id                          TEXT PRIMARY KEY,
-  title                       TEXT NOT NULL,
-  url                         TEXT,                         -- where a citation points
-  source_system               TEXT NOT NULL,                -- mandatory metadata: source
-  source_reference            TEXT NOT NULL,                -- how to go back to it
-  pillar                      TEXT,                         -- one of the four Library pillars
-  content_type                TEXT NOT NULL,
-  attribution                 TEXT,                         -- mandatory metadata: attribution
-  attribution_basis           TEXT,                         -- how attribution was established
-  attribution_status          TEXT NOT NULL DEFAULT 'to_confirm',
-  permission                  TEXT NOT NULL,                -- public | internal | private_client
-  confidentiality             TEXT NOT NULL,                -- public | internal | client_private
-  owner                       TEXT,                         -- mandatory metadata: owner
-  reviewer                    TEXT,                         -- mandatory metadata: reviewer
-  review_date                 DATE,                         -- mandatory metadata: review date
-  approval_status             TEXT NOT NULL,                -- approved | needs_review | pending_review | raw
-  review_reason               TEXT,                         -- why it is held, if it is held
-  contains_client_identifiers BOOLEAN NOT NULL DEFAULT 0,
-  source_last_modified        DATE,
-  word_count                  INTEGER,
-  illustrative                BOOLEAN NOT NULL DEFAULT 0,
-  created_at                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRAGMA foreign_keys = ON;
 
-  CHECK (permission      IN ('public', 'internal', 'private_client')),
-  CHECK (confidentiality IN ('public', 'internal', 'client_private')),
-  CHECK (approval_status IN ('approved', 'needs_review', 'pending_review', 'raw')),
+-- ---------------------------------------------------------------- vocabulary
 
-  -- Nothing is approved without someone accountable for it.
-  CHECK (approval_status <> 'approved' OR (reviewer IS NOT NULL AND review_date IS NOT NULL)
-         OR permission = 'public'),
+CREATE TABLE confidentiality_level (
+  level       TEXT PRIMARY KEY,
+  description TEXT NOT NULL
+);
+INSERT INTO confidentiality_level VALUES
+  ('public',         'published on the public website'),
+  ('internal',       'approved shared knowledge, method notes, analyst entries'),
+  ('client_private', 'private client material. Not the top of the ladder: outside it. No role reads this.');
 
-  -- Client private material can never be carried at a shareable permission level.
-  CHECK (confidentiality <> 'client_private' OR permission = 'private_client'),
+CREATE TABLE audience (
+  name        TEXT PRIMARY KEY,
+  description TEXT NOT NULL
+);
+INSERT INTO audience VALUES
+  ('public',          'anything already published'),
+  ('all_staff',       'shared knowledge, available to every reader'),
+  ('leadership',      'held narrower than all staff'),
+  ('engagement_team', 'the people on one engagement. Never a shared-knowledge audience.');
 
-  -- A held row always says why.
-  CHECK (approval_status = 'approved' OR review_reason IS NOT NULL)
+CREATE TABLE role (
+  name        TEXT PRIMARY KEY,
+  may_approve INTEGER NOT NULL CHECK (may_approve IN (0, 1))
+);
+INSERT INTO role VALUES ('knowledge_reader', 0), ('senior_reviewer', 1);
+
+CREATE TABLE role_audience (
+  role     TEXT NOT NULL REFERENCES role (name),
+  audience TEXT NOT NULL REFERENCES audience (name),
+  PRIMARY KEY (role, audience)
+);
+INSERT INTO role_audience VALUES
+  ('knowledge_reader', 'public'), ('knowledge_reader', 'all_staff'),
+  ('senior_reviewer', 'public'), ('senior_reviewer', 'all_staff'), ('senior_reviewer', 'leadership');
+
+-- ---------------------------------------------------------------- the registry
+
+CREATE TABLE item (
+  id              TEXT PRIMARY KEY,
+  title           TEXT NOT NULL,
+  kind            TEXT NOT NULL,
+  body            TEXT NOT NULL,
+
+  -- content_hash is what an approval is given to. It is recomputed on every write, which is what
+  -- makes "the approval did not survive the edit" a fact about the data rather than a convention.
+  content_hash    TEXT NOT NULL,
+
+  source_system   TEXT NOT NULL,
+  source_ref      TEXT NOT NULL,
+  attribution     TEXT,
+  permission      TEXT NOT NULL,
+  confidentiality TEXT NOT NULL REFERENCES confidentiality_level (level),
+  item_audience   TEXT NOT NULL REFERENCES audience (name),
+
+  owner           TEXT,
+  reviewer        TEXT,
+  review_date     TEXT,
+
+  contains_client_identifiers INTEGER NOT NULL DEFAULT 0 CHECK (contains_client_identifiers IN (0, 1)),
+  withdrawn_at    TEXT,
+  synthetic       INTEGER NOT NULL DEFAULT 0 CHECK (synthetic IN (0, 1)),
+
+  -- A private item is never held for a shared audience. The mislabelling that this blueprint
+  -- treats as the realistic failure is refused here before it can be approved by mistake.
+  CHECK (confidentiality <> 'client_private' OR item_audience = 'engagement_team')
 );
 
-CREATE INDEX idx_registry_gate ON content_registry (confidentiality, approval_status, permission);
-CREATE INDEX idx_registry_pillar ON content_registry (pillar);
+-- ---------------------------------------------------------------- approval
 
--- What the registry noticed on its own: duplicates, thin pages, default titles, missing metadata.
-CREATE TABLE registry_flag (
-  item_id TEXT NOT NULL REFERENCES content_registry (id) ON DELETE CASCADE,
-  flag    TEXT NOT NULL,
-  PRIMARY KEY (item_id, flag)
+-- An approval is a row, not a column. It names who gave it, when, and which version it was given
+-- to. A status field on the item could be set by anything; a row has to be written by somebody.
+CREATE TABLE approval (
+  item_id       TEXT PRIMARY KEY REFERENCES item (id) ON DELETE CASCADE,
+  approved_by   TEXT NOT NULL REFERENCES role (name),
+  approver_id   TEXT NOT NULL,
+  approved_at   TEXT NOT NULL,
+  reviewer      TEXT NOT NULL,
+  review_date   TEXT NOT NULL,
+  version_hash  TEXT NOT NULL,
+
+  -- Only a role that may approve can appear in an approval row.
+  CHECK (approved_by = 'senior_reviewer')
 );
 
--- The unit a citation points at. An answer cites a passage, not a whole page.
-CREATE TABLE passage (
-  id         TEXT PRIMARY KEY,
-  item_id    TEXT NOT NULL REFERENCES content_registry (id) ON DELETE CASCADE,
-  position   INTEGER NOT NULL,
-  text       TEXT NOT NULL
-);
-CREATE INDEX idx_passage_item ON passage (item_id);
-
--- Analysts are knowledge, not contacts. No client of yours appears in this table.
-CREATE TABLE analyst_directory (
-  id              TEXT PRIMARY KEY REFERENCES content_registry (id) ON DELETE CASCADE,
-  analyst_name    TEXT NOT NULL,
-  firm            TEXT NOT NULL,
-  coverage        TEXT,
-  briefing_cadence TEXT,
-  last_interaction DATE
+-- The derivation trail. The private original and its de-identified derivative are a pair, and
+-- the pair lives here rather than inside the derivative, so that nothing served to a reader
+-- carries a reference back to the record it came from.
+CREATE TABLE derivation (
+  derived_id  TEXT NOT NULL REFERENCES item (id) ON DELETE CASCADE,
+  source_id   TEXT NOT NULL REFERENCES item (id),
+  derived_at  TEXT NOT NULL,
+  derived_by  TEXT NOT NULL,
+  removed     TEXT NOT NULL,
+  PRIMARY KEY (derived_id)
 );
 
--- The one place private material and shared knowledge meet, in one direction only.
-CREATE TABLE sales_signal (
-  id                 TEXT PRIMARY KEY REFERENCES content_registry (id) ON DELETE CASCADE,
-  captured_at        DATE NOT NULL,
-  raw_text           TEXT NOT NULL,          -- stays here, registered, never released
-  in_review_queue    BOOLEAN NOT NULL DEFAULT 0,
-  deidentified_title TEXT,
-  deidentified_text  TEXT,
-  removed            TEXT,                   -- what de-identification took out
-  target_pillar      TEXT
+CREATE TABLE audit_event (
+  seq       INTEGER PRIMARY KEY AUTOINCREMENT,
+  at        TEXT NOT NULL,
+  action    TEXT NOT NULL,
+  item_id   TEXT NOT NULL,
+  actor     TEXT NOT NULL,
+  version   TEXT
 );
 
--- Approval creates a NEW row and leaves the original alone. This table records that act.
-CREATE TABLE approval_event (
-  id             INTEGER PRIMARY KEY,
-  source_item_id TEXT NOT NULL REFERENCES content_registry (id),
-  derived_item_id TEXT REFERENCES content_registry (id),
-  approver       TEXT NOT NULL,
-  reviewer       TEXT NOT NULL,
-  decided_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  decision       TEXT NOT NULL,             -- approved | rejected | returned_for_deidentification
-  note           TEXT,
-  CHECK (decision IN ('approved', 'rejected', 'returned_for_deidentification'))
-);
+-- ---------------------------------------------------------------- the publishable set
 
--- Named, owned, dated. An expired exception has no effect: the engine checks the date.
-CREATE TABLE policy_exception (
-  id        INTEGER PRIMARY KEY,
-  item_id   TEXT NOT NULL REFERENCES content_registry (id) ON DELETE CASCADE,
-  rule_id   TEXT NOT NULL,
-  approver  TEXT NOT NULL,
-  granted   DATE NOT NULL,
-  expires   DATE NOT NULL,
-  note      TEXT,
-  CHECK (expires > granted)
-);
+-- The one place that answers "what may be published". Everything else reads this. A ranking bug
+-- can then make answers worse; it cannot make them unsafe, because nothing outside this view is
+-- ever indexed or fetched.
+CREATE VIEW publishable AS
+SELECT i.*
+FROM item i
+JOIN approval a ON a.item_id = i.id
+WHERE i.confidentiality <> 'client_private'          -- R1
+  AND i.owner IS NOT NULL                            -- R2
+  AND i.reviewer IS NOT NULL
+  AND i.review_date IS NOT NULL
+  AND i.attribution IS NOT NULL
+  AND a.version_hash = i.content_hash                -- R4, the approval is tied to a version
+  AND i.contains_client_identifiers = 0              -- R5
+  AND (i.withdrawn_at IS NULL OR i.withdrawn_at > date('now'))   -- R6
+  AND (i.permission <> 'internal'                    -- R7
+       OR i.review_date >= date('now', '-18 months'));
 
--- Every retrieval, with the rule that withheld what it withheld. This is what makes an
--- access review possible six months later.
-CREATE TABLE retrieval_log (
-  id           INTEGER PRIMARY KEY,
-  asked_at     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  role         TEXT NOT NULL,
-  query        TEXT NOT NULL,
-  returned_ids TEXT,                        -- passage ids
-  withheld_ids TEXT,
-  withheld_rule TEXT
-);
-
--- What may be published into the folder a connected assistant reads. Everything else is
--- invisible to the assistant because it was never put there.
-CREATE VIEW shared_knowledge AS
-SELECT r.*
-FROM content_registry r
-WHERE r.confidentiality <> 'client_private'
-  AND r.approval_status = 'approved'
-  AND r.contains_client_identifiers = 0
-  AND (r.permission = 'public' OR (r.reviewer IS NOT NULL AND r.review_date IS NOT NULL));
+-- What a given role may retrieve. R8 lives here, and it is the same answer for search and for
+-- fetch by id, because both read this view.
+CREATE VIEW publishable_for_role AS
+SELECT ra.role, p.*
+FROM publishable p
+JOIN role_audience ra ON ra.audience = p.item_audience;

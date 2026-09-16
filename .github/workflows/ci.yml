@@ -1,4 +1,4 @@
-name: blueprint checks
+name: boundary checks
 
 on:
   push:
@@ -14,14 +14,17 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
 
       - run: npm ci
 
-      - name: policy, schema and registry tests
+      - name: the checks, over HTTP against the reference service
         run: npm test
 
-      - name: policy digest matches the policy file
+      - name: the negative control, each guard removed in turn
+        run: npm run negative-control
+
+      - name: the policy digest matches the policy file
         run: |
           recorded=$(cut -d' ' -f1 policy/policy.sha256)
           actual=$(shasum -a 256 policy/policy.yaml | cut -d' ' -f1)
@@ -29,19 +32,23 @@ jobs:
           echo "actual   $actual"
           test "$recorded" = "$actual"
 
-      - name: access boundary test
+      - name: the receipt, produced by this run
         run: npm run boundary
 
-      - name: the committed log is the log this run produced
-        run: |
-          git diff --stat -- logs/access-boundary-test.log || true
-          grep -q "RESULT  PASS" logs/access-boundary-test.log
+      - name: the receipt says PASS
+        run: grep -q "^RESULT  PASS" logs/access-boundary-check.log
 
-      - name: no private identifier ever reaches the public registry
+      - name: no invented identifier ever reaches the real content file
         run: |
-          for s in "Northwind" "Priya Raman" "Halden" "Corveil"; do
-            if grep -qi "$s" data/content-registry.json; then
-              echo "private string found in the public registry: $s"; exit 1
+          for s in "Northwind" "Priya Raman" "Halden" "Corveil" "private-accounts"; do
+            if grep -qi "$s" data/library-sample.json; then
+              echo "an invented string reached the real content file: $s"; exit 1
             fi
           done
-          echo "public registry is clean"
+          echo "the real content file is clean"
+
+      - name: the Library sample is still a sample
+        run: |
+          n=$(node -e "console.log(require('./data/library-sample.json').items.length)")
+          echo "library rows: $n"
+          test "$n" -eq 8

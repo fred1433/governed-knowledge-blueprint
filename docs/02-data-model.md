@@ -1,82 +1,100 @@
 # 2. Data model
 
-Four tables carry the system: **Content Registry**, **Analyst Directory**, **Sales Signal review
-queue**, **Approved Shared Knowledge**. The executable form is `schema/schema.sql`; the populated
-form is in `data/`, where the Content Registry rows are the real public Library and everything else
-is marked `illustrative`.
+Four registers, one gate. The shape below is what `schema/schema.sql` implements and what the
+reference service reads. It is an implementation of record for the controls, not a proposal to add
+another database next to the systems Forward already runs. A team that keeps this in an existing
+tool has to reproduce the same constraints there, and the acceptance criteria in document 6 are
+written so that either choice can be checked the same way.
 
-The model is deliberately small. Each table exists because something different can go wrong with it.
+## The one shape every source is reduced to
 
-## 2.1 Content Registry
-
-One row per item of knowledge, whatever system it lives in. The row is not a copy of the content:
-it is the governed record about the content, plus the passages that retrieval is allowed to use.
+A registry works only if every source ends up in the same shape. Otherwise the gate needs a
+special case per source, and a special case is where the exception lives.
 
 | Field | Why it exists |
 |---|---|
-| `id`, `title`, `url` | Identity and the thing a citation points at |
-| `source_system`, `source_reference` | Mandatory metadata: **source**. Where it came from, and how to go back |
-| `pillar` | The four Library pillars, so retrieval can be scoped the way the Library already is |
-| `content_type` | `library_article`, `site_page`, `blog_post`, `approved_method`, `analyst_profile`, `raw_sales_signal`, `placeholder`, `test_fixture` |
-| `attribution` | Mandatory metadata: **attribution**. Value plus how it was established |
-| `permission` | Mandatory metadata: **permission**. `public`, `internal`, `private_client` |
-| `confidentiality` | Mandatory metadata: **confidentiality**. `public`, `internal`, `client_private` |
-| `owner`, `reviewer`, `review_date` | Mandatory metadata: the three accountability fields |
-| `approval_status` | `approved`, `needs_review`, `pending_review`, `raw` |
-| `review_reason` | Why a row is held. A row held with no reason is a bug, and a test fails on it |
-| `contains_client_identifiers` | Set by the reviewer or by a scan. `R3` refuses to share a row where it is true |
-| `flags` | What the registry noticed on its own: duplicates, thin pages, missing descriptions |
-| `source_last_modified` | From the source, not from us |
-| `passages[]` | The unit a citation points at, so an answer cites a passage and not a whole page |
+| `id` | A stable identifier that does not change when a title is edited. |
+| `title`, `body` | What the item is called and what it says. |
+| `content_hash` | What an approval is given to. Recomputed on every write. |
+| `source_system`, `source_ref` | Where it came from, so an answer can be traced. |
+| `attribution` | Who is credited. Required: an item with no attribution is not shareable. |
+| `permission`, `confidentiality`, `item_audience` | The three separate questions below. |
+| `owner`, `reviewer`, `review_date` | Who is accountable, who checked, when. Required. |
+| `contains_client_identifiers` | A human's assertion, enforced by the gate. |
+| `withdrawn_at` | Set once; the item leaves from that moment. |
+| `synthetic` | Whether the row is invented. Served to the reader, so nothing invented can pass for real. |
 
-**Permission and confidentiality are two fields, not one.** Permission answers "who may read it".
-Confidentiality answers "what kind of material is it". A row can be mislabelled on one and still be
-caught by the other, and the access boundary test exercises exactly that case.
+### Three fields that are usually collapsed into one, and should not be
 
-## 2.2 Analyst Directory
+- **`confidentiality`** is what the material *is*: public, internal, or client private. It is a
+  property of the content and it does not change because somebody gained a permission.
+- **`item_audience`** is who it is held for: everyone, leadership, one engagement team. It is a
+  distribution decision.
+- **`permission`** is the handling class the item inherits from its source.
 
-An analyst row is knowledge, not a contact record: coverage, what they ask for, how they react, what
-the last cycle produced. It lives at `internal` permission and follows the same rules as everything
-else, including the review date. One row in `data/analyst-directory.json` is deliberately missing its
-review date so that the refusal can be seen happening rather than described.
+Collapsing them produces the failure this whole system exists to prevent: an item marked
+"confidential" gets read as "needs a higher role", somebody with that role is given it, and
+private material has entered shared knowledge through an ordinary permission grant. Keeping them
+apart is what lets `client_private` mean *no reader*, rather than *a senior reader*.
 
-What an analyst row must never carry: which client of yours briefed them, what that client said, or
-any assessment tied to a named account. Those belong to the engagement, not to the directory.
+## The four registers
 
-## 2.3 Sales Signal review queue
+**Content Registry.** Every item, from every source, in the shape above. The public Library rows
+carry what the public pages publish and nothing more: owner, reviewer and review date are recorded
+as unknown, because the pages do not publish them and a prototype is not entitled to guess them.
 
-The queue is the only place where private material and shared knowledge meet, and they meet in one
-direction only.
+**Analyst Directory.** Entries about named third parties. Two things follow from the fact that the
+subject is a person outside the firm: entries are held at a narrower audience by default, and the
+directory is not a list of the system's users. The roles in this architecture are named for what
+they do to knowledge, `knowledge_reader` and `senior_reviewer`, precisely so the two are never
+confused.
 
-| Field | Note |
-|---|---|
-| `raw_text` | Stays in the private source. Registered so it can be governed, never released |
-| `confidentiality` | Always `client_private` |
-| `approval_status` | `raw` until someone puts it in the queue, then `pending_review` |
-| `deidentified_draft` | The candidate lesson: text, the list of what was removed, the pillar it belongs to |
-| `in_review_queue` | What the reviewer sees today |
+**Private records and their review queue.** Raw material, isolated. The queue is not a staging
+area on the way to publication: an item in it is never promoted. What the queue holds is the
+decision *to write something else*. A reviewer reads the private record, writes a de-identified
+item, and approves that. The original keeps its confidentiality before and after.
 
-Approval does not promote the raw row. It **creates a new row** (`SS-001-DEID` in the sample data)
-that carries the lesson, names the reviewer and the date, and records what was removed. The raw row
-keeps its status and its confidentiality for ever. That is the difference between de-identification
-and relabelling, and it is why the audit trail survives.
+**Approved Shared Knowledge.** The published set. In the schema it is a view rather than a table,
+`publishable`, because a view cannot fall out of date with the rules it is derived from. Every
+retrieval path reads it, so search and fetch-by-id can never disagree about what is allowed.
 
-## 2.4 Approved Shared Knowledge
+## Approval is a row, not a status field
 
-Approved methods, templates and derived notes. Permission `internal`, approval `approved`, a named
-reviewer and a review date, or the registry refuses to share them. This is the table that is
-published into the folder a connected assistant reads, and nothing else is.
+```sql
+CREATE TABLE approval (
+  item_id      TEXT PRIMARY KEY REFERENCES item (id) ON DELETE CASCADE,
+  approved_by  TEXT NOT NULL REFERENCES role (name),
+  approver_id  TEXT NOT NULL,
+  approved_at  TEXT NOT NULL,
+  reviewer     TEXT NOT NULL,
+  review_date  TEXT NOT NULL,
+  version_hash TEXT NOT NULL,
+  CHECK (approved_by = 'senior_reviewer')
+);
+```
 
-## 2.5 The rows as they are today
+A status column can be set by any code path that touches the item, including a sync that had no
+idea what it was doing. A row has to be written deliberately, it names who wrote it, and it names
+the version it applies to. That last column is what makes "the approval did not survive the edit"
+a fact about the data rather than a convention somebody has to remember.
 
-| Table | Rows | Origin |
-|---|---|---|
-| Content Registry | 71 | The public Library, crawled 16 Sep 2026 |
-| Approved Shared Knowledge | 3 | Illustrative |
-| Analyst Directory | 3 | Illustrative |
-| Sales Signal queue | 3 | Illustrative |
-| Passages indexed | 543 | 532 from the public Library, 11 illustrative |
+The judgement stays human. What the model enforces is that the judgement exists, that it is
+attributable, and that it is attached to a specific version of a specific item.
 
-Every illustrative row carries `"illustrative": true` in the data files, a test asserts that no
-non-Library row is missing that flag, and another test asserts that no private string ever appears
-in the public rows.
+## The constraint that catches the realistic mistake
+
+```sql
+CHECK (confidentiality <> 'client_private' OR item_audience = 'engagement_team')
+```
+
+The failure to expect is not somebody deciding to publish client material. It is a row filed under
+the wrong label on a busy day, then approved by someone who trusted the label. The check above
+refuses that shape at write time. The engine holds the same line at read time, and the checks in
+document 7 include exactly that case: a record filed as internal, approved, with every other field
+in order, held by one rule and one rule only.
+
+## What remains open
+
+The real owners, reviewers, review dates and audiences. The identifiers of the systems this maps
+onto. Whether the registry lives in a database, in an existing tool, or in the document store
+itself. None of those can be settled without Forward, and none of them changes the shape above.

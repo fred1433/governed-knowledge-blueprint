@@ -1,0 +1,78 @@
+{
+ "_comment": "SYNTHETIC. These are the governance values a senior reviewer would enter. They are placeholders, not Forward AR Experts' decisions, and nothing here was taken from any Forward system. They exist so the publication path can be exercised end to end. Every real value belongs to a person at Forward.",
+ "synthetic": true,
+ "generated_at": "2026-09-16",
+ "note_on_the_items_left_open": "Three of the eight articles have no decision here on purpose. On each of them the title listed for the article and the heading on the page disagree, so the identity of the item is not settled. The engine does not treat that as a detail to fix later: with owner, reviewer and review date unknown, publication is refused. That is the rule working, not a gap in the sample.",
+ "items_left_open": [
+  "LIB-004",
+  "LIB-010",
+  "LIB-032"
+ ],
+ "decisions": [
+  {
+   "item_id": "LIB-005",
+   "owner": "Founder and President",
+   "reviewer": "Founder and President",
+   "review_date": "2026-09-16",
+   "audience": "all_staff",
+   "approval": {
+    "status": "approved",
+    "approved_by": "u-senior",
+    "approved_at": "2026-09-16T12:00:00Z",
+    "approved_content_hash": "95b399496ca5058fbdb0eede400333cb746c1d077692e70fd1ce30531daa60af"
+   }
+  },
+  {
+   "item_id": "LIB-007",
+   "owner": "Founder and President",
+   "reviewer": "Founder and President",
+   "review_date": "2026-09-16",
+   "audience": "all_staff",
+   "approval": {
+    "status": "approved",
+    "approved_by": "u-senior",
+    "approved_at": "2026-09-16T12:00:00Z",
+    "approved_content_hash": "b833ff58556f6fa70c209f143693c0ffe4fcce908471fab28f1e2c49760240fa"
+   }
+  },
+  {
+   "item_id": "LIB-011",
+   "owner": "Founder and President",
+   "reviewer": "Founder and President",
+   "review_date": "2026-09-16",
+   "audience": "all_staff",
+   "approval": {
+    "status": "approved",
+    "approved_by": "u-senior",
+    "approved_at": "2026-09-16T12:00:00Z",
+    "approved_content_hash": "947107ade1eeeccb395f7e45d9e55f14b3f73fb2c65e5fb8c5d2c20a071e9a5d"
+   }
+  },
+  {
+   "item_id": "LIB-033",
+   "owner": "Founder and President",
+   "reviewer": "Founder and President",
+   "review_date": "2026-09-16",
+   "audience": "all_staff",
+   "approval": {
+    "status": "approved",
+    "approved_by": "u-senior",
+    "approved_at": "2026-09-16T12:00:00Z",
+    "approved_content_hash": "c6225681ecae80505d7f9f8e1ee64c04fad719304462406dc71e05e48462adbb"
+   }
+  },
+  {
+   "item_id": "LIB-057",
+   "owner": "Founder and President",
+   "reviewer": "Founder and President",
+   "review_date": "2026-09-16",
+   "audience": "all_staff",
+   "approval": {
+    "status": "approved",
+    "approved_by": "u-senior",
+    "approved_at": "2026-09-16T12:00:00Z",
+    "approved_content_hash": "b0ef2be3bf3cbc2bc1411365f2eec5695f98934ee27c0b034a546d9e5bf2d381"
+   }
+  }
+ ]
+}

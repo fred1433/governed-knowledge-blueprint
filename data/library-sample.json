@@ -1,0 +1,367 @@
+{
+ "_comment": "Eight public Library articles, two per observed pillar. Real content, fetched once from the public pages on 2026-09-16. This is a sample built for the architecture, not a copy of the Library: each row holds the title, the URL, the observed pillar, the visible attribution, the page's own title tag and meta description, and one short quoted extract. Governance fields are recorded as unknown, because the public pages do not publish them and nobody here is entitled to guess them. The observations are computed from the fetched pages, not asserted.",
+ "sample": "8 of the articles listed under the four pillars on /library",
+ "fetched_at": "2026-09-16",
+ "method": "one HTTP request per page, eight pages, no crawl of the rest of the site",
+ "stack_note": "the posting states Wix and Algolia; this sample records no finding about either",
+ "items": [
+  {
+   "id": "LIB-004",
+   "title": "Forward Analyst Briefings",
+   "url": "https://www.forwardarexperts.com/analyst-briefings",
+   "path": "/analyst-briefings",
+   "page_title_tag": "Forward AR Experts Analyst Briefings | | AI-Enabled AR",
+   "meta_description": "Explore how effective analyst briefings combine narrative clarity, relevant evidence and disciplined preparation - helping analysts understand what matters, why it is different and where it fits in the market.",
+   "pillar_observed": "Influence Mechanics (Briefings & Evaluations)",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the title listed for this article does not appear verbatim on the page, so the listing and the page disagree on the name of the same item",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title"
+   ],
+   "extract": {
+    "id": "LIB-004#e1",
+    "text": "Storytelling Analyst Briefings Forward AR Experts Analyst Briefings are built on one principle: analysts reward clarity, discipline, and substance - not theatrics, volume, or marketing gloss. Our approach transforms briefings from one‑off presentations into strategic moments of influence that strengthen perception, reinforce narrative consistency, and build long‑term analyst trust. Every briefing is ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "392cd7362faa09f0a92a7b80447505bacf47b3a841fbb760e29960c49aa831ad"
+  },
+  {
+   "id": "LIB-005",
+   "title": "Analyst Confidence Curve",
+   "url": "https://www.forwardarexperts.com/analyst-confidence-curve",
+   "path": "/analyst-confidence-curve",
+   "page_title_tag": "Analyst Confidence Curve | | AI-Enabled AR",
+   "meta_description": "Explore how analyst confidence rises or falls through accumulated signals, and how narrative clarity, credible evidence and consistent execution turn uncertainty into lasting trust.",
+   "pillar_observed": "Influence Mechanics (Briefings & Evaluations)",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title"
+   ],
+   "extract": {
+    "id": "LIB-005#e1",
+    "text": "Analyst Confidence Curve is ultimately a model of predictable influence. Vendors who understand it operate with intention: they build clarity early, reinforce it with evidence, show up with strong executives, and maintain a steady rhythm of engagement. When these elements align, analyst confidence becomes durable, and durable confidence becomes market advantage.",
+    "words": 51,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "95b399496ca5058fbdb0eede400333cb746c1d077692e70fd1ce30531daa60af"
+  },
+  {
+   "id": "LIB-007",
+   "title": "AR Program Health Check",
+   "url": "https://www.forwardarexperts.com/ar-health-check",
+   "path": "/ar-health-check",
+   "page_title_tag": "AR Program Health Check | | AI-Enabled AR",
+   "meta_description": "The AR Program Health Check provides a focused, senior-led evaluation of your strategy, relationships, positioning and execution - revealing what is working, where credibility or influence may be at risk and what to prioritize next.",
+   "pillar_observed": "Program Excellence (Ops & Delivery)",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title"
+   ],
+   "extract": {
+    "id": "LIB-007#e1",
+    "text": "AR Program Health Check provides a focused, senior-led evaluation of your strategy, relationships, positioning and execution - revealing what is working, where credibility or influence may be at risk and what to prioritize next. Pulse AR Program Health Check Most analyst relations programs don’t fail because of a single issue. They fail ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "b833ff58556f6fa70c209f143693c0ffe4fcce908471fab28f1e2c49760240fa"
+  },
+  {
+   "id": "LIB-011",
+   "title": "The AR Operating System",
+   "url": "https://www.forwardarexperts.com/ar-operating-systems",
+   "path": "/ar-operating-systems",
+   "page_title_tag": "The AR Operating System | | AI-Enabled AR",
+   "meta_description": "Explore the frameworks, processes, tools and shared practices that connect AR strategy to daily execution, helping teams preserve knowledge, coordinate work and operate with greater consistency.",
+   "pillar_observed": "Program Excellence (Ops & Delivery)",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title"
+   ],
+   "extract": {
+    "id": "LIB-011#e1",
+    "text": "The AR Operating System is the disciplined framework that transforms Analyst Relations from a reactive function into a predictable, repeatable, and strategically aligned engine of influence. It provides the structure, governance, and operational rigor required to ensure every analyst interaction, from briefings to evaluations, reinforces the company’s narrative, credibility, and long‑term market ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "947107ade1eeeccb395f7e45d9e55f14b3f73fb2c65e5fb8c5d2c20a071e9a5d"
+  },
+  {
+   "id": "LIB-010",
+   "title": "AR Cross-Functional Leadership",
+   "url": "https://www.forwardarexperts.com/ar-leadership",
+   "path": "/ar-leadership",
+   "page_title_tag": "AR Leadership | | AI-Enabled AR",
+   "meta_description": "Explore how executive visibility, credibility and consistent engagement influence analyst confidence, market perception and the strength of strategic relationships.",
+   "pillar_observed": "Forward Leadership & Executive Influence",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the title listed for this article does not appear verbatim on the page, so the listing and the page disagree on the name of the same item",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title",
+    "the meta description is byte-identical to LIB-033, so two articles hand an index the same summary"
+   ],
+   "extract": {
+    "id": "LIB-010#e1",
+    "text": "Executive alignment Analyst Relations Cross-Functional Leadership Forward Leadership Executive Influence Series Explore how AR leaders build alignment across executive, product, marketing, communications and sales teams, turning cross-functional expertise into clearer market narratives and stronger analyst engagement. Contribute Your Own Article Analyst Relations Cross-Functional Leadership Analyst Relations has evolved far beyond the coordination ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "01cd7bdba07ff8edc4cb0ff500a6d64143ad0ab2356827a81f341f2c120b8ab4"
+  },
+  {
+   "id": "LIB-033",
+   "title": "Executive Influence",
+   "url": "https://www.forwardarexperts.com/executive-influence",
+   "path": "/executive-influence",
+   "page_title_tag": "Executive Influence | | AI-Enabled AR",
+   "meta_description": "Explore how executive visibility, credibility and consistent engagement influence analyst confidence, market perception and the strength of strategic relationships.",
+   "pillar_observed": "Forward Leadership & Executive Influence",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title",
+    "the meta description is byte-identical to LIB-010, so two articles hand an index the same summary"
+   ],
+   "extract": {
+    "id": "LIB-033#e1",
+    "text": "Executive Influence is the highest expression of leadership impact within Analyst Relations, the point where executives no longer simply participate in analyst conversations but actively shape how analysts understand the company’s strategy, differentiation, and long‑term trajectory. It is the shift from presence to persuasion, from visibility to authority, from participation to market‑shaping ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "c6225681ecae80505d7f9f8e1ee64c04fad719304462406dc71e05e48462adbb"
+  },
+  {
+   "id": "LIB-032",
+   "title": "Differentiation That Survives Scrutiny",
+   "url": "https://www.forwardarexperts.com/differences-that-survive-scrutiny",
+   "path": "/differences-that-survive-scrutiny",
+   "page_title_tag": "Differentiation That Survives Scrutiney | | AI-Enabled AR",
+   "meta_description": "Explore how a winning AR strategy connects a differentiated narrative, the right analysts and a disciplined operating system - turning disconnected activity into consistent, measurable influence.",
+   "pillar_observed": "Forward Strategy & Market Positioning",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the title tag spells \"Scrutiney\" where the article heading spells \"Scrutiny\"",
+    "the title listed for this article does not appear verbatim on the page, so the listing and the page disagree on the name of the same item",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title"
+   ],
+   "extract": {
+    "id": "LIB-032#e1",
+    "text": "Differentiation That Survives Scrutiney Differentiation That Stands Up Against Scrutiny is the discipline of building claims analysts can validate, defend, and repeat, not because they sound compelling, but because they are grounded in evidence, clarity, and competitive truth. In Analyst Relations, differentiation is not what you say that makes you unique; it ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "b48d6728aed871b97b91892b3081c152c21c2252f203ca6fcfda01530d3a715b"
+  },
+  {
+   "id": "LIB-057",
+   "title": "Positioning for Analyst Mindshare",
+   "url": "https://www.forwardarexperts.com/positioning-for-analyst-mindshare",
+   "path": "/positioning-for-analyst-mindshare",
+   "page_title_tag": "Positioning for Analyst Mindshare | | AI-Enabled AR",
+   "meta_description": "Explore how clarity, consistency and credibility help your company earn a lasting place in analysts’ minds, and turn a memorable, repeatable narrative into influence and competitive advantage.",
+   "pillar_observed": "Forward Strategy & Market Positioning",
+   "content_type": "library_article",
+   "source_system": "public website (the posting states Wix and Algolia; this sample verifies neither)",
+   "source_reference": "public page fetched 2026-09-16, HTTP 200",
+   "attribution": {
+    "value": "Forward AR Experts",
+    "basis": "published on forwardarexperts.com",
+    "status": "observed"
+   },
+   "permission": "public",
+   "confidentiality": "public",
+   "audience": "public",
+   "owner": {
+    "value": null,
+    "status": "unknown"
+   },
+   "reviewer": {
+    "value": null,
+    "status": "unknown"
+   },
+   "review_date": {
+    "value": null,
+    "status": "unknown"
+   },
+   "contains_client_identifiers": false,
+   "observations": [
+    "the title tag carries an empty segment between two separators, so an index stores a title that reads as a fragment",
+    "the first prose block after the summary is a practitioner biography, not the article, so an ingestion step that takes the opening chunk indexes a biography under this title"
+   ],
+   "extract": {
+    "id": "LIB-057#e1",
+    "text": "Positioning for Analyst Mindshare is the discipline of shaping how analysts understand, remember, and reference your company across the conversations, evaluations, and research that influence enterprise buying decisions. Mindshare is not earned through volume or visibility - it is earned through clarity, consistency, and credibility. When analysts can easily articulate who you ...",
+    "words": 53,
+    "note": "short quoted extract, so retrieval has real text to match; the article itself stays on forwardarexperts.com"
+   },
+   "content_hash": "b0ef2be3bf3cbc2bc1411365f2eec5695f98934ee27c0b034a546d9e5bf2d381"
+  }
+ ]
+}

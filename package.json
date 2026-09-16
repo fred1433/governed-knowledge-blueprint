@@ -3,15 +3,17 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "A governed knowledge system blueprint: content registry, executable policy, and the access boundary test that proves private material stays out of shared knowledge.",
+  "description": "An architecture sample for an approved-knowledge publication boundary: a content registry, an executable policy, a reference service that authorises on the server, and boundary checks that are run rather than described.",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test tests/",
+    "negative-control": "node scripts/negative-control.mjs",
     "boundary": "node scripts/boundary-log.mjs",
-    "digest": "shasum -a 256 policy/policy.yaml > policy/policy.sha256",
-    "check": "npm run test && npm run boundary"
+    "checks": "npm test && npm run negative-control && npm run boundary",
+    "serve": "node service/server.mjs",
+    "digest": "shasum -a 256 policy/policy.yaml > policy/policy.sha256"
   },
   "dependencies": {
     "yaml": "2.8.1"

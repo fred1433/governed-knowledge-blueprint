@@ -1,37 +1,40 @@
-# Governed knowledge policy for Forward AR Experts.
+# Publication policy for a governed knowledge system.
 #
-# This file is the policy. It is not documentation of a policy that lives somewhere else:
-# src/policy.mjs reads this file, the retrieval gate applies the rules in the order below,
-# and tests/access-boundary.test.mjs proves what they do and do not allow.
+# This file is the policy. It is not a description of a policy that lives somewhere else:
+# src/policy.mjs loads this file, the reference service in service/ applies it on the server
+# before anything is indexed or returned, and the checks in tests/ exercise it over HTTP.
 #
-# Each rule names a predicate that is implemented in src/policy.mjs. The YAML holds the
-# order, the parameters and the sentence a person reads when an item is withheld. It is
-# deliberately not a general purpose language: a rule that is not implemented is a hard
-# error at load time, so the file can never claim a control the system does not run.
+# A rule names a predicate implemented in src/policy-core.mjs. A rule whose predicate is not
+# implemented is a hard error at load time, so this file can never claim a control that does
+# not run. The order matters: the first rule that fires is the reason the item is withheld.
 
-version: 1
-policy_name: Forward AR Experts governed knowledge policy
+version: 2
+policy_name: Approved-knowledge publication policy
 drafted: 2026-09-16
-status: draft for review by the Founder and President
+status: sample for discussion, not adopted
 
-# Sensitivity ladder. Nothing above "internal" is ever exposed through shared knowledge.
+# Sensitivity ladder. client_private has no reader anywhere in this system: it is not the top
+# of a permission ladder, it is outside the ladder.
 confidentiality_levels:
-  - public          # published on forwardarexperts.com
-  - internal        # approved shared knowledge, methods, analyst directory
-  - client_private  # raw sales conversations, client materials, anything naming a client
+  - public
+  - internal
+  - client_private
 
-# Who can retrieve what. No role grants client_private: that content has no reader in
-# shared knowledge at all, which is the difference between a permission and an isolation.
+# Two roles, named for what they do to knowledge. They are not the analyst directory: that
+# directory describes people the knowledge is about, not the people who read it.
 roles:
-  ar_lead:
-    label: AR lead (senior, approved access)
-    grants: [public, internal]
-  contributor:
-    label: Contributor (no internal permission)
-    grants: [public]
+  knowledge_reader:
+    label: Knowledge reader
+    audiences: [public, all_staff]
+    may_approve: false
+  senior_reviewer:
+    label: Senior reviewer
+    audiences: [public, all_staff, leadership]
+    may_approve: true
 
-# Mandatory metadata, as listed in the engagement: source, attribution, permission,
-# confidentiality, owner, reviewer, review date.
+# The metadata a published item must carry. Unknown is not a warning here: an item missing any
+# of these is refused publication. A value nobody has set is not a value to be confirmed later,
+# it is a missing accountability.
 required_metadata:
   - source
   - attribution
@@ -42,69 +45,94 @@ required_metadata:
   - review_date
 
 rules:
-  - id: R1_CLIENT_PRIVATE_ISOLATION
+  - id: R1_PRIVATE_ISOLATION
     predicate: confidentiality_in
     params:
       values: [client_private]
-    decision: withhold
     applies_to: all_roles
-    reason: "Raw sales conversations and private client material are isolated from shared knowledge. No role reads them here, and no connector is pointed at them."
+    reason: >-
+      Private client material is isolated from shared knowledge. No role reads it here, and it is
+      never published by any path. When a lesson from an engagement is worth keeping, a person
+      writes a separate de-identified item and approves that instead. The original stays where it
+      is, before and after.
 
-  - id: R2_APPROVAL_REQUIRED
+  - id: R2_REQUIRED_METADATA_UNKNOWN
+    predicate: required_metadata_unknown
+    params:
+      fields: [owner, reviewer, review_date, attribution]
+    applies_to: all_roles
+    reason: >-
+      Publication is refused while owner, reviewer, review date or attribution is unknown. Being
+      published on the public website is not the same as being approved shared knowledge: somebody
+      still has to be accountable for the item being current and correct.
+
+  - id: R3_APPROVAL_REQUIRED
     predicate: approval_status_not_in
     params:
       values: [approved]
-    decision: withhold
     applies_to: all_roles
-    reason: "Only items a senior reviewer has approved enter shared knowledge. Everything else waits in the review queue, including pages that are published but were never meant to be knowledge."
+    reason: >-
+      Only an item a senior reviewer has approved is published. The judgement is human. What the
+      code enforces is that the approval exists, that it names who gave it, and that it is attached
+      to a version.
 
-  - id: R3_DEIDENTIFICATION_REQUIRED
+  - id: R4_APPROVAL_BOUND_TO_VERSION
+    predicate: version_drift
+    applies_to: all_roles
+    reason: >-
+      The approval was given for a specific version of this item. The text has changed since, so the
+      approval does not carry over to it. The new version needs its own approval.
+
+  - id: R5_IDENTIFIERS_PRESENT
     predicate: flag_is_true
     params:
       field: contains_client_identifiers
-    decision: withhold
     applies_to: all_roles
-    reason: "An item that still carries client identifiers cannot be shared. Approval alone does not lift this: the identifiers have to be removed first, which produces a new derived item."
+    reason: >-
+      An item still carrying client identifiers is not published, and approving it does not lift
+      this. Whether a de-identification is good enough is a human judgement; what the code does is
+      refuse to publish anything still flagged as carrying identifiers.
 
-  - id: R4_PERMISSION_SCOPE
-    predicate: permission_not_granted_to_role
-    decision: withhold
-    applies_to: per_role
-    reason: "The reader's role does not grant this permission level."
-
-  - id: R5_REVIEW_DATE_REQUIRED_FOR_INTERNAL
-    predicate: internal_without_review_date
-    decision: withhold
+  - id: R6_WITHDRAWN
+    predicate: withdrawn_on_or_before
     applies_to: all_roles
-    reason: "An internal item without a review date has no owner accountable for it being current. Public Library pages are allowed through without one, and are flagged instead."
+    reason: >-
+      The item was withdrawn. It is excluded here from the moment it is withdrawn. Propagation to a
+      system outside this one is that system's own timing, and this policy makes no claim about it.
 
-  - id: R6_RETENTION_WINDOW
+  - id: R7_RETENTION_WINDOW
     predicate: review_date_older_than
     params:
       months: 18
       applies_to_permissions: [internal]
-    decision: withhold
     applies_to: all_roles
-    reason: "An internal item whose review date is older than the retention window is withdrawn from shared knowledge until it is reviewed again."
+    reason: >-
+      The review date is outside the retention window, so the item leaves shared knowledge until
+      somebody reviews it again. Nobody has to remember: the date is evaluated on every request.
 
-  - id: R7_ATTRIBUTION_REQUIRED
-    predicate: attribution_missing
-    decision: withhold
-    applies_to: all_roles
-    reason: "Contributed knowledge is published with clear attribution, so an item with no attribution is not shareable."
+  - id: R8_AUDIENCE_SCOPE
+    predicate: audience_not_granted
+    applies_to: per_role
+    reason: >-
+      This item is held for an audience the reader's role does not carry. It is absent from search
+      and it is not readable by direct reference either, because hiding an item from a result list
+      is not the same as protecting it.
 
-# Exceptions are named, owned and dated. An expired exception stops working on its own:
-# the engine checks the date, so nobody has to remember to remove it.
+# Exceptions are named, owned and dated. An expired exception stops working on its own, because
+# the engine checks the date rather than trusting anyone to remember to remove it.
 exceptions:
-  - item_id: AD-003
-    rule_id: R5_REVIEW_DATE_REQUIRED_FOR_INTERNAL
+  - item_id: AN-002
+    rule_id: R2_REQUIRED_METADATA_UNKNOWN
     approver: Founder and President
     granted: 2026-09-16
-    expires: 2026-09-16   # illustrative: already expired, so the rule still applies today
-    note: "Illustrative entry. It shows the shape of an exception and the fact that an expired one has no effect."
+    expires: 2026-09-16
+    note: >-
+      Sample entry, already expired on the day it was written. It is here to show the shape of an
+      exception and to show that an expired one has no effect: AN-002 is still withheld today.
 
-# What this policy does not do, so nobody assumes it does.
+# What this policy does not do, written down so nobody assumes it does.
 out_of_scope:
-  - This policy governs what enters shared knowledge. It does not govern what a person can read inside the source systems themselves.
+  - It governs what is published into shared knowledge. It does not govern what a person can open inside the source systems themselves.
   - It does not control what a connected assistant does with content a member can already open in the underlying application.
-  - Approval by a senior reviewer is a human act. The registry records it and refuses to act without it, but it cannot perform it.
+  - Approval is a human act. The registry records it, binds it to a version and refuses to publish without it. It cannot perform it.
+  - The quality of a de-identification is a human judgement. The code checks for the strings it was given, which is a floor, not a guarantee.

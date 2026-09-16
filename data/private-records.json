@@ -1,0 +1,107 @@
+{
+ "_comment": "SYNTHETIC. Every company, person, conversation and file path below is invented for this blueprint. No client of Forward AR Experts appears here, and none of this was taken from any private system. These records exist so the boundary checks have something private to try to leak, and so the review queue has something real to refuse.",
+ "synthetic": true,
+ "generated_at": "2026-09-16",
+ "leak_markers": {
+  "_comment": "The oracle for a leak. Not only names: the distinctive details a de-identified note could still carry, and the metadata that would betray the folder an item came from. A response that contains any of these strings, from any endpoint, for any identity, is a failure.",
+  "names": [
+   "Northwind Grid Systems",
+   "Northwind",
+   "Priya Raman",
+   "Raman",
+   "Halden Robotics",
+   "Halden",
+   "Corveil Health",
+   "Corveil"
+  ],
+  "distinctive_details": [
+   "two reference customers never confirmed in writing",
+   "November inquiry",
+   "briefing rehearsal",
+   "internal board deck about the failed launch",
+   "retainer restructured around briefing cycles",
+   "cut analyst spend after the reorganisation",
+   "new CMO"
+  ],
+  "metadata": [
+   "private-accounts",
+   "discovery-2026-09-12",
+   "renewal-risk-2026-08-28",
+   "pricing-thread-2026-09-09",
+   "Private sales board"
+  ]
+ },
+ "records": [
+  {
+   "id": "PR-001",
+   "title": "Discovery call notes, raw",
+   "kind": "private_record",
+   "source_system": "Private sales board (synthetic)",
+   "source_path": "private-accounts/northwind/discovery-2026-09-12",
+   "captured_at": "2026-09-12",
+   "permission": "private",
+   "confidentiality": "client_private",
+   "audience": "engagement_team",
+   "owner": { "value": "Founder and President", "status": "synthetic" },
+   "reviewer": { "value": null, "status": "unknown" },
+   "review_date": { "value": null, "status": "unknown" },
+   "attribution": { "value": "Internal call notes", "basis": "synthetic", "status": "synthetic" },
+   "approval_status": "none",
+   "in_review_queue": true,
+   "contains_client_identifiers": true,
+   "synthetic": true,
+   "text": "Discovery call, Northwind Grid Systems. Priya Raman, VP Product Marketing, said their last evaluation submission was set aside because two reference customers never confirmed in writing, and that finance now wants the analyst budget justified before the November inquiry. She asked for a briefing rehearsal and for help rebuilding the evidence pack.",
+   "derivative_draft": {
+    "title": "Pattern: an evaluation submission set aside for unconfirmed references",
+    "text": "A mid-size infrastructure vendor had an evaluation submission set aside because written confirmations from reference accounts arrived after the window closed, and finance then asked for the analyst budget to be justified before the next scheduled interaction. The work that followed was a rehearsal and a rebuilt evidence pack. Method note: run the written-confirmation check before the submission window opens, not after the deck is built.",
+    "pillar": "Program Excellence (Ops & Delivery)",
+    "removed": [
+     "the client name",
+     "the individual name and title",
+     "the timing that identifies the account",
+     "the wording distinctive enough to identify the conversation"
+    ]
+   }
+  },
+  {
+   "id": "PR-002",
+   "title": "Pricing objection, raw thread",
+   "kind": "private_record",
+   "source_system": "Private sales board (synthetic)",
+   "source_path": "private-accounts/halden/pricing-thread-2026-09-09",
+   "captured_at": "2026-09-09",
+   "permission": "private",
+   "confidentiality": "client_private",
+   "audience": "engagement_team",
+   "owner": { "value": "Founder and President", "status": "synthetic" },
+   "reviewer": { "value": null, "status": "unknown" },
+   "review_date": { "value": null, "status": "unknown" },
+   "attribution": { "value": "Internal thread", "basis": "synthetic", "status": "synthetic" },
+   "approval_status": "none",
+   "in_review_queue": false,
+   "contains_client_identifiers": true,
+   "synthetic": true,
+   "text": "Halden Robotics thread: they want the retainer restructured around briefing cycles only, and they shared their internal board deck about the failed launch. That deck is confidential and must never leave the private board."
+  },
+  {
+   "id": "PR-003",
+   "title": "Renewal risk note, raw",
+   "kind": "private_record",
+   "source_system": "Private sales board (synthetic)",
+   "source_path": "private-accounts/corveil/renewal-risk-2026-08-28",
+   "captured_at": "2026-08-28",
+   "permission": "private",
+   "confidentiality": "client_private",
+   "audience": "engagement_team",
+   "owner": { "value": "Founder and President", "status": "synthetic" },
+   "reviewer": { "value": null, "status": "unknown" },
+   "review_date": { "value": null, "status": "unknown" },
+   "attribution": { "value": "Internal note", "basis": "synthetic", "status": "synthetic" },
+   "approval_status": "none",
+   "in_review_queue": false,
+   "contains_client_identifiers": true,
+   "synthetic": true,
+   "text": "Corveil Health renewal at risk: their new CMO wants to cut analyst spend after the reorganisation, and the sponsor asked us not to mention the reorganisation to anyone outside the engagement."
+  }
+ ]
+}
