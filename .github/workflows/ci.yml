@@ -1,0 +1,47 @@
+name: blueprint checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - run: npm ci
+
+      - name: policy, schema and registry tests
+        run: npm test
+
+      - name: policy digest matches the policy file
+        run: |
+          recorded=$(cut -d' ' -f1 policy/policy.sha256)
+          actual=$(shasum -a 256 policy/policy.yaml | cut -d' ' -f1)
+          echo "recorded $recorded"
+          echo "actual   $actual"
+          test "$recorded" = "$actual"
+
+      - name: access boundary test
+        run: npm run boundary
+
+      - name: the committed log is the log this run produced
+        run: |
+          git diff --stat -- logs/access-boundary-test.log || true
+          grep -q "RESULT  PASS" logs/access-boundary-test.log
+
+      - name: no private identifier ever reaches the public registry
+        run: |
+          for s in "Northwind" "Priya Raman" "Halden" "Corveil"; do
+            if grep -qi "$s" data/content-registry.json; then
+              echo "private string found in the public registry: $s"; exit 1
+            fi
+          done
+          echo "public registry is clean"

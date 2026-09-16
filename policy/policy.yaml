@@ -1,0 +1,110 @@
+# Governed knowledge policy for Forward AR Experts.
+#
+# This file is the policy. It is not documentation of a policy that lives somewhere else:
+# src/policy.mjs reads this file, the retrieval gate applies the rules in the order below,
+# and tests/access-boundary.test.mjs proves what they do and do not allow.
+#
+# Each rule names a predicate that is implemented in src/policy.mjs. The YAML holds the
+# order, the parameters and the sentence a person reads when an item is withheld. It is
+# deliberately not a general purpose language: a rule that is not implemented is a hard
+# error at load time, so the file can never claim a control the system does not run.
+
+version: 1
+policy_name: Forward AR Experts governed knowledge policy
+drafted: 2026-09-16
+status: draft for review by the Founder and President
+
+# Sensitivity ladder. Nothing above "internal" is ever exposed through shared knowledge.
+confidentiality_levels:
+  - public          # published on forwardarexperts.com
+  - internal        # approved shared knowledge, methods, analyst directory
+  - client_private  # raw sales conversations, client materials, anything naming a client
+
+# Who can retrieve what. No role grants client_private: that content has no reader in
+# shared knowledge at all, which is the difference between a permission and an isolation.
+roles:
+  ar_lead:
+    label: AR lead (senior, approved access)
+    grants: [public, internal]
+  contributor:
+    label: Contributor (no internal permission)
+    grants: [public]
+
+# Mandatory metadata, as listed in the engagement: source, attribution, permission,
+# confidentiality, owner, reviewer, review date.
+required_metadata:
+  - source
+  - attribution
+  - permission
+  - confidentiality
+  - owner
+  - reviewer
+  - review_date
+
+rules:
+  - id: R1_CLIENT_PRIVATE_ISOLATION
+    predicate: confidentiality_in
+    params:
+      values: [client_private]
+    decision: withhold
+    applies_to: all_roles
+    reason: "Raw sales conversations and private client material are isolated from shared knowledge. No role reads them here, and no connector is pointed at them."
+
+  - id: R2_APPROVAL_REQUIRED
+    predicate: approval_status_not_in
+    params:
+      values: [approved]
+    decision: withhold
+    applies_to: all_roles
+    reason: "Only items a senior reviewer has approved enter shared knowledge. Everything else waits in the review queue, including pages that are published but were never meant to be knowledge."
+
+  - id: R3_DEIDENTIFICATION_REQUIRED
+    predicate: flag_is_true
+    params:
+      field: contains_client_identifiers
+    decision: withhold
+    applies_to: all_roles
+    reason: "An item that still carries client identifiers cannot be shared. Approval alone does not lift this: the identifiers have to be removed first, which produces a new derived item."
+
+  - id: R4_PERMISSION_SCOPE
+    predicate: permission_not_granted_to_role
+    decision: withhold
+    applies_to: per_role
+    reason: "The reader's role does not grant this permission level."
+
+  - id: R5_REVIEW_DATE_REQUIRED_FOR_INTERNAL
+    predicate: internal_without_review_date
+    decision: withhold
+    applies_to: all_roles
+    reason: "An internal item without a review date has no owner accountable for it being current. Public Library pages are allowed through without one, and are flagged instead."
+
+  - id: R6_RETENTION_WINDOW
+    predicate: review_date_older_than
+    params:
+      months: 18
+      applies_to_permissions: [internal]
+    decision: withhold
+    applies_to: all_roles
+    reason: "An internal item whose review date is older than the retention window is withdrawn from shared knowledge until it is reviewed again."
+
+  - id: R7_ATTRIBUTION_REQUIRED
+    predicate: attribution_missing
+    decision: withhold
+    applies_to: all_roles
+    reason: "Contributed knowledge is published with clear attribution, so an item with no attribution is not shareable."
+
+# Exceptions are named, owned and dated. An expired exception stops working on its own:
+# the engine checks the date, so nobody has to remember to remove it.
+exceptions:
+  - item_id: AD-003
+    rule_id: R5_REVIEW_DATE_REQUIRED_FOR_INTERNAL
+    approver: Founder and President
+    granted: 2026-09-16
+    expires: 2026-09-16   # illustrative: already expired, so the rule still applies today
+    note: "Illustrative entry. It shows the shape of an exception and the fact that an expired one has no effect."
+
+# What this policy does not do, so nobody assumes it does.
+out_of_scope:
+  - This policy governs what enters shared knowledge. It does not govern what a person can read inside the source systems themselves.
+  - It does not control what a connected assistant does with content a member can already open in the underlying application.
+  - Approval by a senior reviewer is a human act. The registry records it and refuses to act without it, but it cannot perform it.

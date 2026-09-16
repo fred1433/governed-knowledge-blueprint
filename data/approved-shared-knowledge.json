@@ -1,0 +1,84 @@
+{
+ "$comment": "ILLUSTRATIVE. These internal method notes are invented for the blueprint. They are NOT Forward AR Experts content. They exist to show how an internal-permission item behaves in the registry next to the real public Library rows.",
+ "illustrative": true,
+ "generated_at": "2026-09-16",
+ "items": [
+  {
+   "id": "GK-001",
+   "title": "Briefing pre-read: what goes to an analyst 72 hours before the call",
+   "source_system": "Approved document storage (illustrative)",
+   "source_reference": "illustrative placeholder, not a Forward AR Experts document",
+   "pillar": "Influence Mechanics (Briefings & Evaluations)",
+   "content_type": "approved_method",
+   "attribution": { "value": "Senior practitioner, Forward AR Experts", "basis": "illustrative", "status": "illustrative" },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "owner": { "value": "Founder and President", "status": "illustrative" },
+   "reviewer": { "value": "Senior practitioner", "status": "illustrative" },
+   "review_date": { "value": "2026-08-20", "status": "illustrative" },
+   "approval_status": "approved",
+   "contains_client_identifiers": false,
+   "illustrative": true,
+   "passages": [
+    {
+     "id": "GK-001#p1",
+     "text": "The pre-read is three pages, sent 72 hours before the briefing: the narrative in one paragraph, the two proof points the analyst has asked about before, and the open questions we want them to bring. Anything that needs a customer name is cleared with that customer first or replaced by a pattern description."
+    },
+    {
+     "id": "GK-001#p2",
+     "text": "A briefing rehearsal happens the day before with the executive who will answer the hard question. The rehearsal is where we find the claims that are not yet evidence. Claims without evidence are removed from the deck rather than softened."
+    }
+   ]
+  },
+  {
+   "id": "GK-002",
+   "title": "Evaluation evidence pack: fields required before any submission",
+   "source_system": "Approved document storage (illustrative)",
+   "source_reference": "illustrative placeholder, not a Forward AR Experts document",
+   "pillar": "Program Excellence (Ops & Delivery)",
+   "content_type": "approved_method",
+   "attribution": { "value": "Senior practitioner, Forward AR Experts", "basis": "illustrative", "status": "illustrative" },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "owner": { "value": "Founder and President", "status": "illustrative" },
+   "reviewer": { "value": "Senior practitioner", "status": "illustrative" },
+   "review_date": { "value": "2026-07-02", "status": "illustrative" },
+   "approval_status": "approved",
+   "contains_client_identifiers": false,
+   "illustrative": true,
+   "passages": [
+    {
+     "id": "GK-002#p1",
+     "text": "Before a Magic Quadrant or Wave submission opens, the evidence pack must carry: reference customers who have agreed in writing, deployment counts with the date they were measured, the competitive claim with its source, and the roadmap items that have a shipped date rather than an intention."
+    },
+    {
+     "id": "GK-002#p2",
+     "text": "The pack is refused if a reference customer has not confirmed in writing, if a number has no measurement date, or if a claim cites an internal deck as its only source. A refused pack goes back with the missing field named, not with a general comment."
+    }
+   ]
+  },
+  {
+   "id": "GK-003",
+   "title": "Pattern note: what moves an analyst from skeptic to advocate",
+   "source_system": "Approved document storage (illustrative)",
+   "source_reference": "illustrative placeholder, not a Forward AR Experts document",
+   "pillar": "Influence Mechanics (Briefings & Evaluations)",
+   "content_type": "approved_method",
+   "attribution": { "value": "Senior practitioner, Forward AR Experts", "basis": "illustrative", "status": "illustrative" },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "owner": { "value": "Founder and President", "status": "illustrative" },
+   "reviewer": { "value": "Senior practitioner", "status": "illustrative" },
+   "review_date": { "value": "2026-06-11", "status": "illustrative" },
+   "approval_status": "approved",
+   "contains_client_identifiers": false,
+   "illustrative": true,
+   "passages": [
+    {
+     "id": "GK-003#p1",
+     "text": "Skepticism turns on consistency, not on volume. The vendors that move usually did three things across two cycles: they corrected one public claim themselves, they brought a customer who described a failure and its fix, and they answered the roadmap question with a date they then met."
+    }
+   ]
+  }
+ ]
+}

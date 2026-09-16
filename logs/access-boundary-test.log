@@ -1,0 +1,36 @@
+ACCESS BOUNDARY TEST -- governed knowledge blueprint
+run at            2026-09-16T13:06:15.266Z
+evaluation date   2026-09-16
+policy            policy/policy.yaml  sha256 3233ddef48e12e73e5fd0748bda9474814c31bb9ffc001249a4e29a9f3ad20aa
+rules             R1_CLIENT_PRIVATE_ISOLATION, R2_APPROVAL_REQUIRED, R3_DEIDENTIFICATION_REQUIRED, R4_PERMISSION_SCOPE, R5_REVIEW_DATE_REQUIRED_FOR_INTERNAL, R6_RETENTION_WINDOW, R7_ATTRIBUTION_REQUIRED
+roles             ar_lead, contributor
+registry          71 public Library rows, 3 approved method notes (illustrative), 3 analyst rows (illustrative), 3 raw sales signals (illustrative)
+passages indexed  547
+
+SWEEP  2 roles x 17 queries = 34 retrievals, 158 passages returned, 0 leaks
+
+WITHHELD, BY RULE (role = ar_lead, the most privileged reader)
+  R1_CLIENT_PRIVATE_ISOLATION            3 items   SS-001 SS-002 SS-003
+  R2_APPROVAL_REQUIRED                  35 items   LIB-001 LIB-003 LIB-008 LIB-009 LIB-012 LIB-014 ...
+  R3_DEIDENTIFICATION_REQUIRED           0 items   
+  R4_PERMISSION_SCOPE                    0 items   
+  R5_REVIEW_DATE_REQUIRED_FOR_INTERNAL   1 items   AD-003
+  R6_RETENTION_WINDOW                    0 items   
+  R7_ATTRIBUTION_REQUIRED                0 items   
+
+THE PRIVATE SIGNAL, STEP BY STEP
+  raw, ar_lead      -> withheld by R1_CLIENT_PRIVATE_ISOLATION
+  raw, contributor  -> withheld by R1_CLIENT_PRIVATE_ISOLATION
+  approved but not de-identified, ar_lead      -> withheld by R3_DEIDENTIFICATION_REQUIRED
+  approved but not de-identified, contributor  -> withheld by R3_DEIDENTIFICATION_REQUIRED
+  de-identified and approved (SS-001-DEID), ar_lead      -> ALLOWED
+  de-identified and approved (SS-001-DEID), contributor  -> withheld by R4_PERMISSION_SCOPE
+  identifiers left in the derived text: 0
+  original row after the approval: approval_status=pending_review, confidentiality=client_private
+
+NEGATIVE CONTROL (does the sweep have teeth?)
+  case: a private row mislabelled as internal, approved, with every other rule satisfied
+  with R1_CLIENT_PRIVATE_ISOLATION removed, the same query returns it: true
+  with the real policy, it does not:                                   true
+
+RESULT  PASS  0 leak(s) across 34 retrievals

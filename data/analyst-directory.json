@@ -1,0 +1,76 @@
+{
+ "$comment": "ILLUSTRATIVE. Every analyst, firm and note below is invented for the blueprint. No real analyst, no real research firm, and no Forward AR Experts record is represented here. The point is the shape of the row and how permission and confidentiality behave on it.",
+ "illustrative": true,
+ "generated_at": "2026-09-16",
+ "entries": [
+  {
+   "id": "AD-001",
+   "analyst_name": "A. Vance (illustrative)",
+   "firm": "Northpoint Research (illustrative firm)",
+   "coverage": "Data platforms, data governance",
+   "source_system": "Analyst Directory (illustrative)",
+   "source_reference": "illustrative placeholder",
+   "attribution": { "value": "Forward AR Experts directory", "basis": "illustrative", "status": "illustrative" },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "owner": { "value": "Founder and President", "status": "illustrative" },
+   "reviewer": { "value": "Senior practitioner", "status": "illustrative" },
+   "review_date": { "value": "2026-09-01", "status": "illustrative" },
+   "approval_status": "approved",
+   "contains_client_identifiers": false,
+   "illustrative": true,
+   "passages": [
+    {
+     "id": "AD-001#p1",
+     "text": "Covers data platforms and data governance. Prefers a written pre-read to a slide walkthrough, asks for deployment counts with measurement dates, and reacts badly to roadmap items presented without a shipped date. Two briefings a year, inquiry outside the evaluation window."
+    }
+   ]
+  },
+  {
+   "id": "AD-002",
+   "analyst_name": "M. Oduya (illustrative)",
+   "firm": "Crestline Advisors (illustrative firm)",
+   "coverage": "AI operations, automation platforms",
+   "source_system": "Analyst Directory (illustrative)",
+   "source_reference": "illustrative placeholder",
+   "attribution": { "value": "Forward AR Experts directory", "basis": "illustrative", "status": "illustrative" },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "owner": { "value": "Founder and President", "status": "illustrative" },
+   "reviewer": { "value": "Senior practitioner", "status": "illustrative" },
+   "review_date": { "value": "2026-08-14", "status": "illustrative" },
+   "approval_status": "approved",
+   "contains_client_identifiers": false,
+   "illustrative": true,
+   "passages": [
+    {
+     "id": "AD-002#p1",
+     "text": "Covers AI operations and automation platforms. Opens every briefing with the competitive question, so the differentiation claim has to survive the first five minutes. Responds to customer evidence that describes a failure and its fix."
+    }
+   ]
+  },
+  {
+   "id": "AD-003",
+   "analyst_name": "S. Lindqvist (illustrative)",
+   "firm": "Northpoint Research (illustrative firm)",
+   "coverage": "Security operations",
+   "source_system": "Analyst Directory (illustrative)",
+   "source_reference": "illustrative placeholder",
+   "attribution": { "value": "Forward AR Experts directory", "basis": "illustrative", "status": "illustrative" },
+   "permission": "internal",
+   "confidentiality": "internal",
+   "owner": { "value": "Founder and President", "status": "illustrative" },
+   "reviewer": { "value": "Senior practitioner", "status": "illustrative" },
+   "review_date": { "value": null, "status": "illustrative_missing_on_purpose" },
+   "approval_status": "approved",
+   "contains_client_identifiers": false,
+   "illustrative": true,
+   "passages": [
+    {
+     "id": "AD-003#p1",
+     "text": "Covers security operations. This row is deliberately missing its review date, so the registry has something real to refuse: an internal row without a review date is withheld from shared knowledge until a named reviewer sets one."
+    }
+   ]
+  }
+ ]
+}
