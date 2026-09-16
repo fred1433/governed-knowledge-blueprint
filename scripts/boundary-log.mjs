@@ -199,7 +199,9 @@ await close();
 
 say('THE CHECKS');
 say('  each one drives the service over HTTP, with a token, through the routes a client uses');
-const checks = spawnSync(process.execPath, ['--test', 'tests/'], { cwd: ROOT, encoding: 'utf8' });
+const testFiles = readdirSync(join(ROOT, 'tests')).filter((f) => f.endsWith('.test.mjs')).sort()
+  .map((f) => join('tests', f));
+const checks = spawnSync(process.execPath, ['--test', ...testFiles], { cwd: ROOT, encoding: 'utf8' });
 const pass = (checks.stdout.match(/pass (\d+)/) ?? [])[1] ?? '?';
 const fail = (checks.stdout.match(/fail (\d+)/) ?? [])[1] ?? '?';
 say(`  ${pass} passed, ${fail} failed`);
