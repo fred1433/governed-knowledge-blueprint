@@ -1,7 +1,7 @@
 {
- "run_at": "2026-09-16T13:58:08.583Z",
+ "run_at": "2026-09-16T14:04:48.802Z",
  "evaluated_as_of": "2026-09-16",
- "code_revision": "b4d245c",
+ "code_revision": "b41e4e4",
  "node": "v26.8.2",
  "policy_digest": "39f3899e8e77a648779dbcaf0446fd9e3afd3872f414edc49dd3301d3332c6b8",
  "policy_name": "Approved-knowledge publication policy",

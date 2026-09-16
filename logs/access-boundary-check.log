@@ -1,8 +1,8 @@
 ACCESS BOUNDARY CHECKS  --  approved-knowledge publication boundary
 
-run at          2026-09-16T13:58:06.689Z
+run at          2026-09-16T14:04:46.899Z
 evaluated as of 2026-09-16
-code revision   b4d245c  (working tree has uncommitted changes)
+code revision   b41e4e4
 node            v26.8.2
 policy          policy/policy.yaml  sha256 39f3899e8e77a648779dbcaf0446fd9e3afd3872f414edc49dd3301d3332c6b8
 test data       5 files in data/  sha256 194c49d1879719e361eea2512449a85d32c5e58225dcafdcad7833cd1442e33d
