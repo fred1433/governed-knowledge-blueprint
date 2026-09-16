@@ -87,3 +87,22 @@ registry mirrors that promise as fields, so the promise is enforceable:
 - `reviewer` and `review_date` record who accepted it and when;
 - a contributed item that mentions a third party's confidential material is `client_private` on
   arrival and goes through the same de-identification path as anything else.
+
+## 3.6 What the registry strips before indexing
+
+A knowledge index is not a copy of a website. Four things are removed from the passages before
+anything is indexed, and the citation still points at the page where they live:
+
+- **Contact details.** Addresses and phone numbers found in the published pages are replaced by
+  `[contact detail on the source page]`. One page carried a named person's address and direct line,
+  and an index is the wrong place for it to be harvested from.
+- **Published prices.** Figures are replaced by `[figure on the source page]`. A retrieval layer
+  that quotes a number out of its commercial context is a liability, and the number changes.
+- **Staffing copy.** Passages about bringing people into a team are not methods, so they are not
+  indexed as methods. Four passages were dropped on that rule.
+- **Typography.** Long dashes are normalised to hyphens and spacing before punctuation is repaired,
+  so a quoted passage reads cleanly wherever it is displayed.
+
+532 passages remain, out of the 71 pages. The stripping is done by the registry, in one place, and
+the reason each item has fewer passages than its word count suggests is recorded rather than
+mysterious.

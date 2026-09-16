@@ -75,7 +75,7 @@ published into the folder a connected assistant reads, and nothing else is.
 | Approved Shared Knowledge | 3 | Illustrative |
 | Analyst Directory | 3 | Illustrative |
 | Sales Signal queue | 3 | Illustrative |
-| Passages indexed | 547 | 536 from the public Library, 11 illustrative |
+| Passages indexed | 543 | 532 from the public Library, 11 illustrative |
 
 Every illustrative row carries `"illustrative": true` in the data files, a test asserts that no
 non-Library row is missing that flag, and another test asserts that no private string ever appears

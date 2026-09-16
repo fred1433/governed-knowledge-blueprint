@@ -1,12 +1,12 @@
 {
- "$comment": "ILLUSTRATIVE. Every analyst, firm and note below is invented for the blueprint. No real analyst, no real research firm, and no Forward AR Experts record is represented here. The point is the shape of the row and how permission and confidentiality behave on it.",
+ "_comment": "ILLUSTRATIVE. Every analyst, firm and note below is invented for the blueprint. No real analyst, no real research firm, and no Forward AR Experts record is represented here. The point is the shape of the row and how permission and confidentiality behave on it.",
  "illustrative": true,
  "generated_at": "2026-09-16",
  "entries": [
   {
    "id": "AD-001",
-   "analyst_name": "A. Vance (illustrative)",
-   "firm": "Northpoint Research (illustrative firm)",
+   "analyst_name": "A. Vance",
+   "firm": "Northpoint Research (illustrative)",
    "coverage": "Data platforms, data governance",
    "source_system": "Analyst Directory (illustrative)",
    "source_reference": "illustrative placeholder",
@@ -28,8 +28,8 @@
   },
   {
    "id": "AD-002",
-   "analyst_name": "M. Oduya (illustrative)",
-   "firm": "Crestline Advisors (illustrative firm)",
+   "analyst_name": "M. Oduya",
+   "firm": "Crestline Advisors (illustrative)",
    "coverage": "AI operations, automation platforms",
    "source_system": "Analyst Directory (illustrative)",
    "source_reference": "illustrative placeholder",
@@ -51,8 +51,8 @@
   },
   {
    "id": "AD-003",
-   "analyst_name": "S. Lindqvist (illustrative)",
-   "firm": "Northpoint Research (illustrative firm)",
+   "analyst_name": "S. Lindqvist",
+   "firm": "Northpoint Research (illustrative)",
    "coverage": "Security operations",
    "source_system": "Analyst Directory (illustrative)",
    "source_reference": "illustrative placeholder",

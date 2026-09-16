@@ -44,7 +44,7 @@ Two sentences carry the whole design:
 
 ## 1.3 What the crawl found in the Library
 
-71 pages, all HTTP 200. 536 passages extracted for retrieval. Four pillars, as published on
+71 pages, all HTTP 200. 532 passages extracted for retrieval, after the registry strips what does not belong in a knowledge index: contact details, phone numbers, published prices, and staffing copy. Four pillars, as published on
 `/library`:
 
 | Pillar | Pages listed |
