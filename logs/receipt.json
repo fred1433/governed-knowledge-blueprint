@@ -1,0 +1,267 @@
+{
+ "run_at": "2026-09-16T13:58:08.583Z",
+ "evaluated_as_of": "2026-09-16",
+ "code_revision": "b4d245c",
+ "node": "v26.8.2",
+ "policy_digest": "39f3899e8e77a648779dbcaf0446fd9e3afd3872f414edc49dd3301d3332c6b8",
+ "policy_name": "Approved-knowledge publication policy",
+ "data_files": [
+  "governance-decisions.json",
+  "identities.json",
+  "internal-records.json",
+  "library-sample.json",
+  "private-records.json"
+ ],
+ "command": "npm run checks",
+ "registry": {
+  "library_article": 8,
+  "analyst_entry": 2,
+  "method_note": 4,
+  "private_record": 3
+ },
+ "sweep": {
+  "requests": 32,
+  "results_returned": 52,
+  "markers_found": 0,
+  "queries": 13,
+  "identities": 2
+ },
+ "corpus": {
+  "knowledge_reader": 6,
+  "senior_reviewer": 7
+ },
+ "total_items": 17,
+ "withheld": {
+  "knowledge_reader": [
+   {
+    "rule": "R1_PRIVATE_ISOLATION",
+    "reason": "Private client material is isolated from shared knowledge. No role reads it here, and it is never published by any path. When a lesson from an engagement is worth keeping, a person writes a separate de-identified item and approves that instead. The original stays where it is, before and after.",
+    "items": [
+     "PR-001",
+     "PR-002",
+     "PR-003"
+    ]
+   },
+   {
+    "rule": "R2_REQUIRED_METADATA_UNKNOWN",
+    "reason": "Publication is refused while owner, reviewer, review date or attribution is unknown. Being published on the public website is not the same as being approved shared knowledge: somebody still has to be accountable for the item being current and correct.",
+    "items": [
+     "LIB-004",
+     "LIB-010",
+     "LIB-032",
+     "AN-002"
+    ]
+   },
+   {
+    "rule": "R3_APPROVAL_REQUIRED",
+    "reason": "Only an item a senior reviewer has approved is published. The judgement is human. What the code enforces is that the approval exists, that it names who gave it, and that it is attached to a version.",
+    "items": []
+   },
+   {
+    "rule": "R4_APPROVAL_BOUND_TO_VERSION",
+    "reason": "The approval was given for a specific version of this item. The text has changed since, so the approval does not carry over to it. The new version needs its own approval.",
+    "items": []
+   },
+   {
+    "rule": "R5_IDENTIFIERS_PRESENT",
+    "reason": "An item still carrying client identifiers is not published, and approving it does not lift this. Whether a de-identification is good enough is a human judgement; what the code does is refuse to publish anything still flagged as carrying identifiers.",
+    "items": [
+     "MN-004"
+    ]
+   },
+   {
+    "rule": "R6_WITHDRAWN",
+    "reason": "The item was withdrawn. It is excluded here from the moment it is withdrawn. Propagation to a system outside this one is that system's own timing, and this policy makes no claim about it.",
+    "items": [
+     "MN-002"
+    ]
+   },
+   {
+    "rule": "R7_RETENTION_WINDOW",
+    "reason": "The review date is outside the retention window, so the item leaves shared knowledge until somebody reviews it again. Nobody has to remember: the date is evaluated on every request.",
+    "items": [
+     "MN-003"
+    ]
+   },
+   {
+    "rule": "R8_AUDIENCE_SCOPE",
+    "reason": "This item is held for an audience the reader's role does not carry. It is absent from search and it is not readable by direct reference either, because hiding an item from a result list is not the same as protecting it.",
+    "items": [
+     "AN-001"
+    ]
+   }
+  ],
+  "senior_reviewer": [
+   {
+    "rule": "R1_PRIVATE_ISOLATION",
+    "reason": "Private client material is isolated from shared knowledge. No role reads it here, and it is never published by any path. When a lesson from an engagement is worth keeping, a person writes a separate de-identified item and approves that instead. The original stays where it is, before and after.",
+    "items": [
+     "PR-001",
+     "PR-002",
+     "PR-003"
+    ]
+   },
+   {
+    "rule": "R2_REQUIRED_METADATA_UNKNOWN",
+    "reason": "Publication is refused while owner, reviewer, review date or attribution is unknown. Being published on the public website is not the same as being approved shared knowledge: somebody still has to be accountable for the item being current and correct.",
+    "items": [
+     "LIB-004",
+     "LIB-010",
+     "LIB-032",
+     "AN-002"
+    ]
+   },
+   {
+    "rule": "R3_APPROVAL_REQUIRED",
+    "reason": "Only an item a senior reviewer has approved is published. The judgement is human. What the code enforces is that the approval exists, that it names who gave it, and that it is attached to a version.",
+    "items": []
+   },
+   {
+    "rule": "R4_APPROVAL_BOUND_TO_VERSION",
+    "reason": "The approval was given for a specific version of this item. The text has changed since, so the approval does not carry over to it. The new version needs its own approval.",
+    "items": []
+   },
+   {
+    "rule": "R5_IDENTIFIERS_PRESENT",
+    "reason": "An item still carrying client identifiers is not published, and approving it does not lift this. Whether a de-identification is good enough is a human judgement; what the code does is refuse to publish anything still flagged as carrying identifiers.",
+    "items": [
+     "MN-004"
+    ]
+   },
+   {
+    "rule": "R6_WITHDRAWN",
+    "reason": "The item was withdrawn. It is excluded here from the moment it is withdrawn. Propagation to a system outside this one is that system's own timing, and this policy makes no claim about it.",
+    "items": [
+     "MN-002"
+    ]
+   },
+   {
+    "rule": "R7_RETENTION_WINDOW",
+    "reason": "The review date is outside the retention window, so the item leaves shared knowledge until somebody reviews it again. Nobody has to remember: the date is evaluated on every request.",
+    "items": [
+     "MN-003"
+    ]
+   },
+   {
+    "rule": "R8_AUDIENCE_SCOPE",
+    "reason": "This item is held for an audience the reader's role does not carry. It is absent from search and it is not readable by direct reference either, because hiding an item from a result list is not the same as protecting it.",
+    "items": []
+   }
+  ]
+ },
+ "publication_path": [
+  {
+   "label": "a knowledge reader tries to derive a shareable note from the private record",
+   "expected": 403,
+   "got": 403,
+   "ok": true
+  },
+  {
+   "label": "a senior reviewer derives it, which creates a new item",
+   "expected": 201,
+   "got": 201,
+   "ok": true
+  },
+  {
+   "label": "the new item DER-001 is not readable yet, it is waiting for approval",
+   "expected": 404,
+   "got": 404,
+   "ok": true
+  },
+  {
+   "label": "a knowledge reader tries to approve it",
+   "expected": 403,
+   "got": 403,
+   "ok": true
+  },
+  {
+   "label": "an approval that names no reviewer is refused",
+   "expected": 422,
+   "got": 422,
+   "ok": true
+  },
+  {
+   "label": "the private record itself is offered for approval, and refused outright",
+   "expected": 403,
+   "got": 403,
+   "ok": true
+  },
+  {
+   "label": "a senior reviewer approves the derived item, naming a reviewer and a date",
+   "expected": 200,
+   "got": 200,
+   "ok": true
+  },
+  {
+   "label": "the derived item is now readable by a knowledge reader",
+   "expected": 200,
+   "got": 200,
+   "ok": true
+  },
+  {
+   "label": "the private original is still refused, to the senior reviewer too",
+   "expected": 404,
+   "got": 404,
+   "ok": true
+  }
+ ],
+ "derived": {
+  "id": "DER-001",
+  "markers_in_served_item": 0,
+  "private_ids_named": 0,
+  "removed": [
+   "the client name",
+   "the individual name and title",
+   "the timing that identifies the account",
+   "the wording distinctive enough to identify the conversation"
+  ]
+ },
+ "checks": {
+  "passed": 41,
+  "failed": 0
+ },
+ "negative_control": [
+  {
+   "rule": "R1_PRIVATE_ISOLATION",
+   "caught": true,
+   "detail": "2 check(s) went red"
+  },
+  {
+   "rule": "R2_REQUIRED_METADATA_UNKNOWN",
+   "caught": true,
+   "detail": "4 check(s) went red"
+  },
+  {
+   "rule": "R3_APPROVAL_REQUIRED",
+   "caught": true,
+   "detail": "1 check(s) went red"
+  },
+  {
+   "rule": "R4_APPROVAL_BOUND_TO_VERSION",
+   "caught": true,
+   "detail": "2 check(s) went red"
+  },
+  {
+   "rule": "R5_IDENTIFIERS_PRESENT",
+   "caught": true,
+   "detail": "3 check(s) went red"
+  },
+  {
+   "rule": "R6_WITHDRAWN",
+   "caught": true,
+   "detail": "3 check(s) went red"
+  },
+  {
+   "rule": "R7_RETENTION_WINDOW",
+   "caught": true,
+   "detail": "2 check(s) went red"
+  },
+  {
+   "rule": "R8_AUDIENCE_SCOPE",
+   "caught": true,
+   "detail": "2 check(s) went red"
+  }
+ ],
+ "negative_control_passed": true,
+ "result": "PASS"
+}

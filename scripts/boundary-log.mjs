@@ -130,10 +130,25 @@ for (const [role, token] of Object.entries(TOKENS)) {
 say(`  ${requests} requests, ${returned} results returned, ${markersFound.length} private marker(s) found`);
 say('');
 
-say('THE PUBLISHED CORPUS, BY IDENTITY');
+// Snapshot before the publication path runs, so the figures reported are the starting state.
+const corpusBefore = Object.fromEntries(
+  Object.keys(TOKENS).map((r) => [r, publishedFor(policy, registry.all(), r, '2026-09-16').length]),
+);
+const totalBefore = registry.all().length;
+const withheldBefore = Object.fromEntries(
+  Object.keys(TOKENS).map((r) => [
+    r,
+    policy.rules.map((rule) => ({
+      rule: rule.id,
+      reason: rule.reason.trim(),
+      items: withheldFor(policy, registry.all(), r, '2026-09-16').filter((h) => h.rule === rule.id).map((h) => h.id),
+    })),
+  ]),
+);
+
+say('THE PUBLISHED CORPUS, BY IDENTITY, BEFORE THE PUBLICATION PATH BELOW');
 for (const role of Object.keys(TOKENS)) {
-  const n = publishedFor(policy, registry.all(), role, '2026-09-16').length;
-  say(`  ${role.padEnd(18)} ${String(n).padStart(2)} of ${registry.all().length} items`);
+  say(`  ${role.padEnd(18)} ${String(corpusBefore[role]).padStart(2)} of ${totalBefore} items`);
 }
 say('');
 
@@ -234,5 +249,43 @@ say(`RESULT  ${ok ? 'PASS' : 'FAIL'}  ${markersFound.length} leak(s) across ${re
 
 mkdirSync(join(ROOT, 'logs'), { recursive: true });
 writeFileSync(join(ROOT, 'logs', 'access-boundary-check.log'), out.join('\n') + '\n', 'utf8');
+
+// The same run, as data. Anything that displays these numbers reads this file, so a page can
+// never quietly restate a figure that is no longer true.
+writeFileSync(
+  join(ROOT, 'logs', 'receipt.json'),
+  JSON.stringify(
+    {
+      run_at: new Date().toISOString(),
+      evaluated_as_of: '2026-09-16',
+      code_revision: sh('git', ['rev-parse', '--short', 'HEAD']),
+      node: process.version,
+      policy_digest: policy.digest,
+      policy_name: policy.policy_name,
+      data_files: dataFiles,
+      command: 'npm run checks',
+      registry: kinds,
+      sweep: { requests, results_returned: returned, markers_found: markersFound.length, queries: QUERIES.length, identities: Object.keys(TOKENS).length },
+      corpus: corpusBefore,
+      total_items: totalBefore,
+      withheld: withheldBefore,
+      publication_path: path.map((s) => ({ label: s.label, expected: s.expected, got: s.got, ok: s.ok })),
+      derived: { id: derivedId, markers_in_served_item: leakedInDerived.length, private_ids_named: namesOrigin.length, removed: JSON.parse(derived.raw).removed ?? [] },
+      checks: { passed: Number(pass), failed: Number(fail) },
+      negative_control: neg.stdout
+        .split('\n')
+        .filter((l) => /^(CAUGHT|MISSED)/.test(l))
+        .map((l) => {
+          const m = l.match(/^(CAUGHT|MISSED)\s+(\S+)\s+(.*)$/);
+          return { rule: m[2], caught: m[1] === 'CAUGHT', detail: m[3].trim() };
+        }),
+      negative_control_passed: negOk,
+      result: ok ? 'PASS' : 'FAIL',
+    },
+    null,
+    1,
+  ),
+  'utf8',
+);
 console.log(out.join('\n'));
 if (!ok) process.exit(1);
